@@ -1,0 +1,1247 @@
+Setting up local Spark environment...
+Activating venv_spark...
+Installing required packages...
+Creating output directories...
+
+--- RUNNING BRONZE LAYER ---
+26/08/23 10:56:23 WARN Utils: Your hostname, TTNPL-lakshayapapnai resolves to a loopback address: 127.0.1.1; using 192.168.0.9 instead (on interface wlp0s20f3)
+26/08/23 10:56:23 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+:: loading settings :: url = jar:file:/home/lakshaya-papnai/C1%20Assesment/venv_spark/lib/python3.12/site-packages/pyspark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /home/lakshaya-papnai/.ivy2/cache
+The jars for the packages stored in: /home/lakshaya-papnai/.ivy2/jars
+io.delta#delta-core_2.12 added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-c6359ed2-8116-47be-b590-f65c04dc28cf;1.0
+	confs: [default]
+	found io.delta#delta-core_2.12;2.4.0 in central
+	found io.delta#delta-storage;2.4.0 in central
+	found org.antlr#antlr4-runtime;4.9.3 in central
+:: resolution report :: resolve 146ms :: artifacts dl 6ms
+	:: modules in use:
+	io.delta#delta-core_2.12;2.4.0 from central in [default]
+	io.delta#delta-storage;2.4.0 from central in [default]
+	org.antlr#antlr4-runtime;4.9.3 from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   3   |   0   |   0   |   0   ||   3   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-c6359ed2-8116-47be-b590-f65c04dc28cf
+	confs: [default]
+	0 artifacts copied, 3 already retrieved (0kB/17ms)
+26/08/23 10:56:23 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+
+[Stage 1:>                                                          (0 + 1) / 1]
+
+                                                                                
+26/08/23 10:56:30 WARN package: Truncated the string representation of a plan since it was too large. This behavior can be adjusted by setting 'spark.sql.debug.maxToStringFields'.
+
+[Stage 4:=========>                                                (8 + 8) / 50]
+
+[Stage 4:=================>                                       (15 + 8) / 50]
+
+[Stage 4:============================>                            (25 + 8) / 50]
+
+[Stage 4:======================================>                  (34 + 8) / 50]
+
+[Stage 4:==================================================>      (44 + 6) / 50]
+
+                                                                                
+
+[Stage 13:==================================>                     (31 + 9) / 50]
+
+[Stage 13:=================================================>      (44 + 6) / 50]
+
+                                                                                
+
+[Stage 18:=================================>                      (30 + 8) / 50]
+
+[Stage 18:================================================>       (43 + 7) / 50]
+
+                                                                                
+26/08/23 10:56:39 WARN SparkSession: Using an existing Spark session; only runtime SQL configurations will take effect.
+
+[Stage 45:============================================>           (40 + 8) / 50]
+
+                                                                                
+
+[Stage 54:===============================>                        (28 + 8) / 50]
+
+[Stage 54:===========================================>            (39 + 8) / 50]
+
+                                                                                
+
+[Stage 59:=====================================================>  (48 + 2) / 50]
+
+                                                                                
+26/08/23 10:56:47 WARN SparkSession: Using an existing Spark session; only runtime SQL configurations will take effect.
+
+[Stage 121:>                                                        (0 + 2) / 2]
+
+[Stage 121:============================>                            (1 + 1) / 2]
+
+                                                                                
+
+[Stage 124:==================================================>    (46 + 4) / 50]
+
+                                                                                
+
+[Stage 133:=========================================>             (38 + 8) / 50]
+
+                                                                                
+
+[Stage 154:============================>                            (1 + 1) / 2]
+
+                                                                                
+============================================================
+  BRONZE INGESTION PIPELINE STARTED
+  Start time: 2026-08-23 10:56:22
+============================================================
+
+>>> Running: Ingest Customers (01_ingest_customers.py)
+Reading raw data from: data/customers.csv
+Writing to Bronze Delta table at: output/delta/bronze/bronze_customers
+Validating Bronze table...
+
+--- Ingestion Summary ---
+Source file: customers.csv
+Rows Ingested: 10010
+Ingestion Timestamp: 2026-08-23 10:56:28.628940
+NULL emails preserved: 50
+Duplicate customer_ids preserved: 10
+
+First 5 rows of Bronze Table:
++-----------+-----------------+------------------------+-------+-----------+----------------+--------------+-------------------------+----------------+
+|customer_id|customer_name    |email                   |country|signup_date|customer_segment|lifetime_value|ingestion_timestamp      |source_file_name|
++-----------+-----------------+------------------------+-------+-----------+----------------+--------------+-------------------------+----------------+
+|1          |Allison Hill     |donaldgarcia@example.net|India  |2024-06-17 |Standard        |32480.67      |2026-08-23 10:56:28.62894|customers.csv   |
+|2          |Javier Johnson   |jesseguzman@example.net |India  |2020-12-29 |Standard        |36326.82      |2026-08-23 10:56:28.62894|customers.csv   |
+|3          |Kimberly Robinson|lisa02@example.net      |Canada |2022-02-10 |Standard        |4650.84       |2026-08-23 10:56:28.62894|customers.csv   |
+|4          |Daniel Gallagher |daviscolin@example.com  |India  |2023-01-07 |Standard        |3989.14       |2026-08-23 10:56:28.62894|customers.csv   |
+|5          |Monica Herrera   |smiller@example.net     |France |2023-02-03 |Standard        |22308.84      |2026-08-23 10:56:28.62894|customers.csv   |
++-----------+-----------------+------------------------+-------+-----------+----------------+--------------+-------------------------+----------------+
+only showing top 5 rows
+
+<<< Ingest Customers: SUCCESS in 16.81s
+
+>>> Running: Ingest Products (03_ingest_products.py)
+Reading raw data from: data/products.csv
+Writing to Bronze Delta table at: output/delta/bronze/bronze_products
+Validating Bronze table...
+
+--- Ingestion Summary ---
+Source file:               products.csv
+Rows Ingested:             500  (expected: 500)
+Ingestion Timestamp:       2026-08-23 10:56:39.224335
+Total NULL values:         0  (expected: 0)
+Rows where cost < price:   500  (expected: 500)
+
+--- Category Distribution ---
++--------------+-----+
+|category      |count|
++--------------+-----+
+|Beauty        |86   |
+|Books         |82   |
+|Sports        |81   |
+|Home & Kitchen|73   |
+|Electronics   |66   |
+|Toys          |61   |
+|Clothing      |51   |
++--------------+-----+
+
+--- Numeric Range Profiling ---
+Price Range:          7.56 — 499.80  (expected: 5.00 — 500.00)
+Cost Range:           3.10 — 332.86
+Stock Qty Range:      1 — 997  (expected: 0 — 1000)
+
+First 5 rows of Bronze Table:
++----------+-----------------+--------------+------+------+--------------+-------------+--------------------------+----------------+
+|product_id|product_name     |category      |price |cost  |stock_quantity|reorder_level|ingestion_timestamp       |source_file_name|
++----------+-----------------+--------------+------+------+--------------+-------------+--------------------------+----------------+
+|1         |Leather Speaker  |Clothing      |321.52|99.67 |142           |23           |2026-08-23 10:56:39.224335|products.csv    |
+|2         |Smart Shoes      |Sports        |339.97|223.32|32            |13           |2026-08-23 10:56:39.224335|products.csv    |
+|3         |Modern Headphones|Books         |51.38 |20.20 |203           |93           |2026-08-23 10:56:39.224335|products.csv    |
+|4         |Digital Shoes    |Home & Kitchen|352.16|164.74|828           |10           |2026-08-23 10:56:39.224335|products.csv    |
+|5         |Wooden Desk      |Home & Kitchen|380.61|138.49|159           |37           |2026-08-23 10:56:39.224335|products.csv    |
++----------+-----------------+--------------+------+------+--------------+-------------+--------------------------+----------------+
+only showing top 5 rows
+
+<<< Ingest Products: SUCCESS in 8.36s
+
+>>> Running: Ingest Orders (02_ingest_orders.py)
+Reading raw data from: data/orders.csv
+Writing to Bronze Delta table at: output/delta/bronze/bronze_orders
+Validating Bronze table...
+
+--- Ingestion Summary ---
+Source file:               orders.csv
+Rows Ingested:             100020  (expected: 100,020)
+Ingestion Timestamp:       2026-08-23 10:56:47.601062
+NULL customer_ids:         100  (expected: 100)
+NULL product_ids:          200  (expected: 200)
+Duplicate order_ids:       20  (expected: 20)
+
+First 5 rows of Bronze Table:
++--------+-----------+----------+----------+--------+----------+------------+------------+------------+--------------------------+----------------+
+|order_id|customer_id|order_date|product_id|quantity|unit_price|total_amount|order_status|payment_date|ingestion_timestamp       |source_file_name|
++--------+-----------+----------+----------+--------+----------+------------+------------+------------+--------------------------+----------------+
+|1       |7557       |2023-08-20|364       |3       |11.97     |35.91       |Pending     |null        |2026-08-23 10:56:47.601062|orders.csv      |
+|2       |605        |2023-03-03|331       |2       |341.80    |683.60      |Completed   |2023-03-07  |2026-08-23 10:56:47.601062|orders.csv      |
+|3       |8339       |2024-11-21|156       |2       |256.58    |513.16      |Completed   |2024-11-26  |2026-08-23 10:56:47.601062|orders.csv      |
+|4       |6145       |2022-01-17|334       |6       |262.07    |1572.42     |Cancelled   |null        |2026-08-23 10:56:47.601062|orders.csv      |
+|5       |9863       |2023-09-09|406       |5       |157.67    |788.35      |Completed   |2023-09-12  |2026-08-23 10:56:47.601062|orders.csv      |
++--------+-----------+----------+----------+--------+----------+------------+------------+------------+--------------------------+----------------+
+only showing top 5 rows
+
+<<< Ingest Orders: SUCCESS in 7.01s
+
+============================================================
+  BRONZE INGESTION PIPELINE — MASTER SUMMARY
+============================================================
+  Overall Status : ALL SUCCEEDED
+  Total Duration : 32.18s
+  Start Time     : 2026-08-23 10:56:22
+  End Time       : 2026-08-23 10:56:54
+------------------------------------------------------------
+  Script                 Module                     Status       Duration
+------------------------------------------------------------
+  Ingest Customers       01_ingest_customers        SUCCESS        16.81s
+  Ingest Products        03_ingest_products         SUCCESS         8.36s
+  Ingest Orders          02_ingest_orders           SUCCESS         7.01s
+============================================================
+
+--- RUNNING SILVER LAYER ---
+26/08/23 10:56:55 WARN Utils: Your hostname, TTNPL-lakshayapapnai resolves to a loopback address: 127.0.1.1; using 192.168.0.9 instead (on interface wlp0s20f3)
+26/08/23 10:56:55 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+:: loading settings :: url = jar:file:/home/lakshaya-papnai/C1%20Assesment/venv_spark/lib/python3.12/site-packages/pyspark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /home/lakshaya-papnai/.ivy2/cache
+The jars for the packages stored in: /home/lakshaya-papnai/.ivy2/jars
+io.delta#delta-core_2.12 added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-79c3d137-6dd7-483e-b417-3f9c6e7b8f40;1.0
+	confs: [default]
+	found io.delta#delta-core_2.12;2.4.0 in central
+	found io.delta#delta-storage;2.4.0 in central
+	found org.antlr#antlr4-runtime;4.9.3 in central
+:: resolution report :: resolve 124ms :: artifacts dl 11ms
+	:: modules in use:
+	io.delta#delta-core_2.12;2.4.0 from central in [default]
+	io.delta#delta-storage;2.4.0 from central in [default]
+	org.antlr#antlr4-runtime;4.9.3 from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   3   |   0   |   0   |   0   ||   3   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-79c3d137-6dd7-483e-b417-3f9c6e7b8f40
+	confs: [default]
+	0 artifacts copied, 3 already retrieved (0kB/28ms)
+26/08/23 10:56:56 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/08/23 10:57:01 WARN package: Truncated the string representation of a plan since it was too large. This behavior can be adjusted by setting 'spark.sql.debug.maxToStringFields'.
+
+[Stage 3:>                                                         (0 + 8) / 50]
+
+[Stage 3:=========>                                                (8 + 8) / 50]
+
+[Stage 3:==============>                                          (13 + 9) / 50]
+
+[Stage 3:====================>                                    (18 + 8) / 50]
+
+[Stage 3:============================>                            (25 + 8) / 50]
+
+[Stage 3:====================================>                    (32 + 8) / 50]
+
+[Stage 3:=============================================>           (40 + 8) / 50]
+
+[Stage 3:=====================================================>   (47 + 3) / 50]
+
+                                                                                
+
+[Stage 9:>                                                          (0 + 1) / 1]
+
+                                                                                
+
+[Stage 13:=========================>                              (23 + 8) / 50]
+
+[Stage 13:===================================>                    (32 + 8) / 50]
+
+[Stage 13:================================================>       (43 + 7) / 50]
+
+                                                                                
+
+[Stage 18:===============================>                        (28 + 9) / 50]
+
+[Stage 18:=================================================>      (44 + 6) / 50]
+
+                                                                                
+
+[Stage 35:=============================>                          (26 + 8) / 50]
+
+[Stage 35:========================================>               (36 + 8) / 50]
+
+[Stage 35:=====================================================>  (48 + 2) / 50]
+
+                                                                                
+
+[Stage 41:=============================>                            (1 + 1) / 2]
+
+                                                                                
+
+[Stage 45:===============================>                        (28 + 8) / 50]
+
+[Stage 45:========================================>               (36 + 8) / 50]
+
+[Stage 45:===================================================>    (46 + 4) / 50]
+
+                                                                                
+Processing: silver_customers_completeness
+  Source : output/delta/bronze/bronze_customers
+  Target : output/delta/silver/silver_customers_completeness
+
+────────────────────────────────────────────────────────────
+  Quality Report: Completeness - Customer Email
+────────────────────────────────────────────────────────────
+  check_name                        total   passed   failed   pass_%
+  ------------------------------ -------- -------- -------- --------
+  Completeness - Customer Email     10010     9960       50    99.5%
+────────────────────────────────────────────────────────────
+
+  NULL emails flagged: 50  (expected: 50)
+Processing: silver_orders_completeness
+  Source : output/delta/bronze/bronze_orders
+  Target : output/delta/silver/silver_orders_completeness
+
+────────────────────────────────────────────────────────────
+  Quality Report: Completeness - Order FKs
+────────────────────────────────────────────────────────────
+  check_name                        total   passed   failed   pass_%
+  ------------------------------ -------- -------- -------- --------
+  Completeness - Order FKs         100020    99720      300    99.7%
+────────────────────────────────────────────────────────────
+
+  NULL customer_ids flagged: 100  (expected: 100)
+  NULL product_ids flagged:  200  (expected: 200)
+Completeness checks complete. Silver tables written successfully.
+26/08/23 10:57:20 WARN Utils: Your hostname, TTNPL-lakshayapapnai resolves to a loopback address: 127.0.1.1; using 192.168.0.9 instead (on interface wlp0s20f3)
+26/08/23 10:57:20 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+:: loading settings :: url = jar:file:/home/lakshaya-papnai/C1%20Assesment/venv_spark/lib/python3.12/site-packages/pyspark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /home/lakshaya-papnai/.ivy2/cache
+The jars for the packages stored in: /home/lakshaya-papnai/.ivy2/jars
+io.delta#delta-core_2.12 added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-f0be9c19-8aee-4fd5-8083-bdf9d167223a;1.0
+	confs: [default]
+	found io.delta#delta-core_2.12;2.4.0 in central
+	found io.delta#delta-storage;2.4.0 in central
+	found org.antlr#antlr4-runtime;4.9.3 in central
+:: resolution report :: resolve 153ms :: artifacts dl 32ms
+	:: modules in use:
+	io.delta#delta-core_2.12;2.4.0 from central in [default]
+	io.delta#delta-storage;2.4.0 from central in [default]
+	org.antlr#antlr4-runtime;4.9.3 from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   3   |   0   |   0   |   0   ||   3   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-f0be9c19-8aee-4fd5-8083-bdf9d167223a
+	confs: [default]
+	0 artifacts copied, 3 already retrieved (0kB/7ms)
+26/08/23 10:57:21 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/08/23 10:57:26 WARN package: Truncated the string representation of a plan since it was too large. This behavior can be adjusted by setting 'spark.sql.debug.maxToStringFields'.
+
+[Stage 3:==>                                                       (2 + 8) / 50]
+
+[Stage 3:=========>                                                (8 + 8) / 50]
+
+[Stage 3:=================>                                       (15 + 8) / 50]
+
+[Stage 3:======================>                                  (20 + 8) / 50]
+
+[Stage 3:==============================>                          (27 + 8) / 50]
+
+[Stage 3:===================================>                     (31 + 9) / 50]
+
+[Stage 3:==========================================>              (37 + 8) / 50]
+
+[Stage 3:==================================================>      (44 + 6) / 50]
+
+                                                                                
+
+[Stage 9:>                                                          (0 + 1) / 1]
+
+                                                                                
+
+[Stage 15:========================>                               (22 + 8) / 50]
+
+[Stage 15:===================================>                    (32 + 9) / 50]
+
+[Stage 15:=============================================>          (41 + 8) / 50]
+
+                                                                                
+
+[Stage 20:====================================>                   (33 + 8) / 50]
+
+                                                                                
+
+[Stage 37:================>                                       (15 + 8) / 50]
+
+[Stage 37:============================>                           (25 + 8) / 50]
+
+[Stage 37:======================================>                 (34 + 8) / 50]
+
+[Stage 37:===============================================>        (42 + 8) / 50]
+
+                                                                                
+
+[Stage 43:=============================>                            (1 + 1) / 2]
+
+[Stage 45:>                                                         (0 + 4) / 4]
+
+[Stage 45:===========================================>              (3 + 1) / 4]
+
+                                                                                
+
+[Stage 49:==============================>                         (27 + 8) / 50]
+
+[Stage 49:==========================================>             (38 + 8) / 50]
+
+[Stage 49:==================================================>     (45 + 5) / 50]
+
+                                                                                
+
+[Stage 54:====================================>                  (33 + 10) / 50]
+
+[Stage 54:=====================================================>  (48 + 2) / 50]
+
+                                                                                
+Processing: silver_customers_uniqueness
+  Source : output/delta/bronze/bronze_customers
+  Target : output/delta/silver/silver_customers_uniqueness
+
+────────────────────────────────────────────────────────────
+  Quality Report: Uniqueness - Customer ID
+────────────────────────────────────────────────────────────
+  check_name                        total   passed   failed   pass_%
+  ------------------------------ -------- -------- -------- --------
+  Uniqueness - Customer ID          10010    10000       10    99.9%
+────────────────────────────────────────────────────────────
+
+  Duplicate customer_ids flagged: 10  (expected: 10)
+Processing: silver_orders_uniqueness
+  Source : output/delta/bronze/bronze_orders
+  Target : output/delta/silver/silver_orders_uniqueness
+
+────────────────────────────────────────────────────────────
+  Quality Report: Uniqueness - Order ID
+────────────────────────────────────────────────────────────
+  check_name                        total   passed   failed   pass_%
+  ------------------------------ -------- -------- -------- --------
+  Uniqueness - Order ID            100020   100000       20   99.98%
+────────────────────────────────────────────────────────────
+
+  Duplicate order_ids flagged: 20  (expected: 20)
+Uniqueness checks complete. Silver tables written successfully.
+26/08/23 10:57:47 WARN Utils: Your hostname, TTNPL-lakshayapapnai resolves to a loopback address: 127.0.1.1; using 192.168.0.9 instead (on interface wlp0s20f3)
+26/08/23 10:57:47 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+:: loading settings :: url = jar:file:/home/lakshaya-papnai/C1%20Assesment/venv_spark/lib/python3.12/site-packages/pyspark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /home/lakshaya-papnai/.ivy2/cache
+The jars for the packages stored in: /home/lakshaya-papnai/.ivy2/jars
+io.delta#delta-core_2.12 added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-3172f48e-d4cc-40cf-bb01-a60adf9dcec9;1.0
+	confs: [default]
+	found io.delta#delta-core_2.12;2.4.0 in central
+	found io.delta#delta-storage;2.4.0 in central
+	found org.antlr#antlr4-runtime;4.9.3 in central
+:: resolution report :: resolve 137ms :: artifacts dl 11ms
+	:: modules in use:
+	io.delta#delta-core_2.12;2.4.0 from central in [default]
+	io.delta#delta-storage;2.4.0 from central in [default]
+	org.antlr#antlr4-runtime;4.9.3 from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   3   |   0   |   0   |   0   ||   3   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-3172f48e-d4cc-40cf-bb01-a60adf9dcec9
+	confs: [default]
+	0 artifacts copied, 3 already retrieved (0kB/13ms)
+26/08/23 10:57:48 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/08/23 10:57:54 WARN package: Truncated the string representation of a plan since it was too large. This behavior can be adjusted by setting 'spark.sql.debug.maxToStringFields'.
+
+[Stage 3:>                                                         (0 + 8) / 50]
+
+[Stage 3:=========>                                                (8 + 8) / 50]
+
+[Stage 3:==================>                                      (16 + 8) / 50]
+
+[Stage 3:=====================>                                   (19 + 9) / 50]
+
+[Stage 3:===============================>                         (28 + 9) / 50]
+
+[Stage 3:=====================================>                   (33 + 8) / 50]
+
+[Stage 3:===============================================>         (42 + 8) / 50]
+
+[Stage 3:====================================================>    (46 + 4) / 50]
+
+                                                                                
+
+[Stage 9:>                                                          (0 + 1) / 1]
+
+                                                                                
+
+[Stage 13:====================>                                   (18 + 8) / 50]
+
+[Stage 13:============================>                           (25 + 9) / 50]
+
+[Stage 13:=======================================>                (35 + 8) / 50]
+
+[Stage 13:============================================>           (40 + 9) / 50]
+
+[Stage 13:======================================================> (49 + 1) / 50]
+
+                                                                                
+
+[Stage 18:========================================>               (36 + 8) / 50]
+
+[Stage 18:======================================================> (49 + 1) / 50]
+
+                                                                                
+
+[Stage 34:====================================>                   (33 + 8) / 50]
+
+[Stage 34:=================================================>      (44 + 6) / 50]
+
+                                                                                
+
+[Stage 44:========================>                               (22 + 8) / 50]
+
+[Stage 44:===================================>                    (32 + 8) / 50]
+
+[Stage 44:===========================================>            (39 + 9) / 50]
+
+[Stage 44:======================================================> (49 + 1) / 50]
+
+                                                                                
+
+[Stage 49:======================================>                 (34 + 8) / 50]
+
+                                                                                
+
+[Stage 65:============================>                           (25 + 8) / 50]
+
+[Stage 65:======================================>                 (34 + 8) / 50]
+
+[Stage 65:==================================================>     (45 + 5) / 50]
+
+                                                                                
+
+[Stage 75:=======================================>                (35 + 8) / 50]
+
+[Stage 75:===================================================>    (46 + 4) / 50]
+
+                                                                                
+
+[Stage 80:===============================================>        (42 + 8) / 50]
+
+                                                                                
+Processing: silver_customers_type_validation
+  Source : output/delta/bronze/bronze_customers
+  Target : output/delta/silver/silver_customers_type_validation
+
+────────────────────────────────────────────────────────────
+  Quality Report: Type Validation - Customers
+────────────────────────────────────────────────────────────
+  check_name                            total   passed   failed   pass_%
+  ---------------------------------- -------- -------- -------- --------
+  Type Validation - Customers           10010    10010        0   100.0%
+────────────────────────────────────────────────────────────
+
+  Failed rows: 0  (expected: 0)
+Processing: silver_orders_type_validation
+  Source : output/delta/bronze/bronze_orders
+  Target : output/delta/silver/silver_orders_type_validation
+
+────────────────────────────────────────────────────────────
+  Quality Report: Type Validation - Orders
+────────────────────────────────────────────────────────────
+  check_name                            total   passed   failed   pass_%
+  ---------------------------------- -------- -------- -------- --------
+  Type Validation - Orders             100020   100020        0   100.0%
+────────────────────────────────────────────────────────────
+
+  Failed rows: 0  (expected: 0)
+Processing: silver_products_type_validation
+  Source : output/delta/bronze/bronze_products
+  Target : output/delta/silver/silver_products_type_validation
+
+────────────────────────────────────────────────────────────
+  Quality Report: Type Validation - Products
+────────────────────────────────────────────────────────────
+  check_name                            total   passed   failed   pass_%
+  ---------------------------------- -------- -------- -------- --------
+  Type Validation - Products              500      500        0   100.0%
+────────────────────────────────────────────────────────────
+
+  Failed rows: 0  (expected: 0)
+Type validation checks complete. Silver tables written successfully.
+26/08/23 10:58:19 WARN Utils: Your hostname, TTNPL-lakshayapapnai resolves to a loopback address: 127.0.1.1; using 192.168.0.9 instead (on interface wlp0s20f3)
+26/08/23 10:58:19 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+:: loading settings :: url = jar:file:/home/lakshaya-papnai/C1%20Assesment/venv_spark/lib/python3.12/site-packages/pyspark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /home/lakshaya-papnai/.ivy2/cache
+The jars for the packages stored in: /home/lakshaya-papnai/.ivy2/jars
+io.delta#delta-core_2.12 added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-8a25a591-6622-4871-8e06-8d0ae0df413d;1.0
+	confs: [default]
+	found io.delta#delta-core_2.12;2.4.0 in central
+	found io.delta#delta-storage;2.4.0 in central
+	found org.antlr#antlr4-runtime;4.9.3 in central
+:: resolution report :: resolve 153ms :: artifacts dl 12ms
+	:: modules in use:
+	io.delta#delta-core_2.12;2.4.0 from central in [default]
+	io.delta#delta-storage;2.4.0 from central in [default]
+	org.antlr#antlr4-runtime;4.9.3 from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   3   |   0   |   0   |   0   ||   3   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-8a25a591-6622-4871-8e06-8d0ae0df413d
+	confs: [default]
+	0 artifacts copied, 3 already retrieved (0kB/16ms)
+26/08/23 10:58:20 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/08/23 10:58:26 WARN package: Truncated the string representation of a plan since it was too large. This behavior can be adjusted by setting 'spark.sql.debug.maxToStringFields'.
+
+[Stage 5:>                                                         (0 + 8) / 50]
+
+[Stage 5:=========>                                                (8 + 8) / 50]
+
+[Stage 5:==============>                                          (13 + 8) / 50]
+
+[Stage 5:=======================>                                 (21 + 8) / 50]
+
+[Stage 5:==============================>                          (27 + 9) / 50]
+
+[Stage 5:=====================================>                   (33 + 8) / 50]
+
+[Stage 5:============================================>            (39 + 8) / 50]
+
+[Stage 5:======================================================>  (48 + 2) / 50]
+
+                                                                                
+
+[Stage 13:==================================>                     (31 + 8) / 50]
+
+                                                                                
+
+[Stage 16:==================================>                     (31 + 8) / 50]
+
+                                                                                
+
+[Stage 17:>                 (0 + 1) / 1][Stage 18:>                 (0 + 1) / 1]
+
+[Stage 17:>                                                         (0 + 1) / 1]
+
+                                                                                
+
+[Stage 23:>                                                         (0 + 2) / 2]
+
+[Stage 23:=============================>                            (1 + 1) / 2]
+
+                                                                                
+
+[Stage 27:==========================>                             (24 + 8) / 50]
+
+[Stage 27:====================================>                   (33 + 8) / 50]
+
+[Stage 27:============================================>          (40 + 10) / 50]
+
+                                                                                
+
+[Stage 32:===================================>                    (32 + 8) / 50]
+
+[Stage 32:====================================================>   (47 + 3) / 50]
+
+                                                                                
+Processing: silver_orders_referential_integrity
+  Orders (child)   : output/delta/bronze/bronze_orders
+  Customers (parent): output/delta/bronze/bronze_customers
+  Products (parent) : output/delta/bronze/bronze_products
+  Target           : output/delta/silver/silver_orders_referential_integrity
+
+────────────────────────────────────────────────────────────
+  Quality Report: Referential Integrity - Orders
+────────────────────────────────────────────────────────────
+  check_name                            total   passed   failed   pass_%
+  ---------------------------------- -------- -------- -------- --------
+  Referential Integrity - Orders       100020    99940       80   99.92%
+────────────────────────────────────────────────────────────
+
+  Orphan customer_ids flagged: 50  (expected: 50)
+  Orphan product_ids flagged:  30  (expected: 30)
+Referential integrity check complete. Silver table written successfully.
+26/08/23 10:58:43 WARN Utils: Your hostname, TTNPL-lakshayapapnai resolves to a loopback address: 127.0.1.1; using 192.168.0.9 instead (on interface wlp0s20f3)
+26/08/23 10:58:43 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+:: loading settings :: url = jar:file:/home/lakshaya-papnai/C1%20Assesment/venv_spark/lib/python3.12/site-packages/pyspark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /home/lakshaya-papnai/.ivy2/cache
+The jars for the packages stored in: /home/lakshaya-papnai/.ivy2/jars
+io.delta#delta-core_2.12 added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-3b11b3c3-270f-4509-a5c5-15feda0f3181;1.0
+	confs: [default]
+	found io.delta#delta-core_2.12;2.4.0 in central
+	found io.delta#delta-storage;2.4.0 in central
+	found org.antlr#antlr4-runtime;4.9.3 in central
+:: resolution report :: resolve 163ms :: artifacts dl 9ms
+	:: modules in use:
+	io.delta#delta-core_2.12;2.4.0 from central in [default]
+	io.delta#delta-storage;2.4.0 from central in [default]
+	org.antlr#antlr4-runtime;4.9.3 from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   3   |   0   |   0   |   0   ||   3   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-3b11b3c3-270f-4509-a5c5-15feda0f3181
+	confs: [default]
+	0 artifacts copied, 3 already retrieved (0kB/24ms)
+26/08/23 10:58:44 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/08/23 10:58:50 WARN package: Truncated the string representation of a plan since it was too large. This behavior can be adjusted by setting 'spark.sql.debug.maxToStringFields'.
+
+[Stage 3:>                                                         (0 + 8) / 50]
+
+[Stage 3:=========>                                                (8 + 8) / 50]
+
+[Stage 3:=================>                                       (15 + 8) / 50]
+
+[Stage 3:======================>                                  (20 + 8) / 50]
+
+[Stage 3:===============================>                         (28 + 8) / 50]
+
+[Stage 3:=======================================>                 (35 + 8) / 50]
+
+[Stage 3:==============================================>          (41 + 8) / 50]
+
+[Stage 3:=======================================================> (49 + 1) / 50]
+
+                                                                                
+
+[Stage 9:>                                                          (0 + 2) / 2]
+
+[Stage 9:=============================>                             (1 + 1) / 2]
+
+                                                                                
+
+[Stage 13:==========================>                             (24 + 8) / 50]
+
+[Stage 13:======================================>                 (34 + 8) / 50]
+
+[Stage 13:=============================================>          (41 + 8) / 50]
+
+                                                                                
+
+[Stage 18:======================================>                 (34 + 8) / 50]
+
+[Stage 18:=====================================================>  (48 + 2) / 50]
+
+                                                                                
+
+[Stage 34:==========================>                             (24 + 8) / 50]
+
+[Stage 34:========================================>               (36 + 8) / 50]
+
+[Stage 34:=====================================================>  (48 + 2) / 50]
+
+                                                                                
+
+[Stage 44:=========================================>              (37 + 8) / 50]
+
+                                                                                
+Processing: silver_orders_business_logic
+  Source : output/delta/bronze/bronze_orders
+  Target : output/delta/silver/silver_orders_business_logic
+
+────────────────────────────────────────────────────────────
+  Quality Report: Business Logic - Orders
+────────────────────────────────────────────────────────────
+  check_name                            total   passed   failed   pass_%
+  ---------------------------------- -------- -------- -------- --------
+  Business Logic - Orders              100020   100020        0   100.0%
+────────────────────────────────────────────────────────────
+
+  Failed rows: 0  (expected: 0)
+Processing: silver_customers_business_logic
+  Source : output/delta/bronze/bronze_customers
+  Target : output/delta/silver/silver_customers_business_logic
+
+────────────────────────────────────────────────────────────
+  Quality Report: Business Logic - Customers
+────────────────────────────────────────────────────────────
+  check_name                            total   passed   failed   pass_%
+  ---------------------------------- -------- -------- -------- --------
+  Business Logic - Customers            10010    10010        0   100.0%
+────────────────────────────────────────────────────────────
+
+  Failed rows: 0  (expected: 0)
+Business logic checks complete. Silver tables written successfully.
+26/08/23 10:59:08 WARN Utils: Your hostname, TTNPL-lakshayapapnai resolves to a loopback address: 127.0.1.1; using 192.168.0.9 instead (on interface wlp0s20f3)
+26/08/23 10:59:08 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+:: loading settings :: url = jar:file:/home/lakshaya-papnai/C1%20Assesment/venv_spark/lib/python3.12/site-packages/pyspark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /home/lakshaya-papnai/.ivy2/cache
+The jars for the packages stored in: /home/lakshaya-papnai/.ivy2/jars
+io.delta#delta-core_2.12 added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-52ff0ec9-674d-4667-87f7-0c23d21b8a56;1.0
+	confs: [default]
+	found io.delta#delta-core_2.12;2.4.0 in central
+	found io.delta#delta-storage;2.4.0 in central
+	found org.antlr#antlr4-runtime;4.9.3 in central
+:: resolution report :: resolve 135ms :: artifacts dl 7ms
+	:: modules in use:
+	io.delta#delta-core_2.12;2.4.0 from central in [default]
+	io.delta#delta-storage;2.4.0 from central in [default]
+	org.antlr#antlr4-runtime;4.9.3 from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   3   |   0   |   0   |   0   ||   3   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-52ff0ec9-674d-4667-87f7-0c23d21b8a56
+	confs: [default]
+	0 artifacts copied, 3 already retrieved (0kB/22ms)
+26/08/23 10:59:09 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/08/23 10:59:16 WARN package: Truncated the string representation of a plan since it was too large. This behavior can be adjusted by setting 'spark.sql.debug.maxToStringFields'.
+
+[Stage 6:>                                                         (0 + 8) / 50]
+
+[Stage 6:=========>                                                (8 + 8) / 50]
+
+[Stage 6:===================>                                     (17 + 8) / 50]
+
+[Stage 6:============================>                            (25 + 8) / 50]
+
+[Stage 6:=====================================>                   (33 + 8) / 50]
+
+[Stage 6:===============================================>         (42 + 8) / 50]
+
+                                                                                
+
+[Stage 14:=========================================>              (37 + 8) / 50]
+
+                                                                                
+
+[Stage 17:======================================>                 (34 + 8) / 50]
+
+[Stage 17:=====================================================>  (48 + 2) / 50]
+
+                                                                                
+
+[Stage 20:================================================>       (43 + 7) / 50]
+
+                                                                                
+
+[Stage 28:============================>                           (25 + 8) / 50]
+
+[Stage 28:======================================>                 (34 + 9) / 50]
+
+[Stage 28:==================================================>     (45 + 5) / 50]
+
+                                                                                
+
+[Stage 33:===========================================>            (39 + 8) / 50]
+
+                                                                                
+
+[Stage 49:==============================>                         (27 + 8) / 50]
+
+[Stage 49:==========================================>             (38 + 9) / 50]
+
+                                                                                
+
+[Stage 71:=============================>                            (1 + 1) / 2]
+
+                                                                                
+
+[Stage 75:=======================================>                (35 + 8) / 50]
+
+[Stage 75:=====================================================>  (48 + 2) / 50]
+
+                                                                                
+
+[Stage 92:================================================>       (43 + 7) / 50]
+
+                                                                                
+
+[Stage 102:=========================>                             (23 + 8) / 50]
+
+[Stage 102:=======================================>               (36 + 8) / 50]
+
+                                                                                
+========================================================================
+  SILVER TABLE CREATION PIPELINE STARTED
+  Start time: 2026-08-23 10:59:10
+========================================================================
+
+>>> Building: silver_customers
+  Combining quality checks for: Customers
+  Writing silver_customers → output/delta/silver/silver_customers
+  silver_customers: 10150 total | 10020 passed | 130 failed  (expected failed: ~60)
+<<< silver_customers: SUCCESS
+
+>>> Building: silver_orders
+  Combining quality checks for: Orders
+  Writing silver_orders → output/delta/silver/silver_orders
+  silver_orders: 100620 total | 99920 passed | 700 failed  (expected failed: ~400)
+<<< silver_orders: SUCCESS
+
+>>> Building: silver_products
+  Reading silver_products_type_validation → promoting to silver_products
+  Writing silver_products → output/delta/silver/silver_products
+  silver_products: 500 total | 500 passed | 0 failed  (expected failed: 0)
+<<< silver_products: SUCCESS
+
+========================================================================
+  FINAL SILVER LAYER — MASTER QUALITY REPORT
+========================================================================
+  table                             total   passed   failed   pass_%
+  ------------------------------ -------- -------- -------- --------
+  silver_customers                  10150    10020      130   98.72%
+  silver_orders                    100620    99920      700    99.3%
+  silver_products                     500      500        0   100.0%
+========================================================================
+
+========================================================================
+  PIPELINE STATUS : ALL SUCCEEDED
+  Total Duration  : 32.26s
+  End Time        : 2026-08-23 10:59:42
+────────────────────────────────────────────────────────────────────────
+  silver_customers               SUCCESS
+  silver_orders                  SUCCESS
+  silver_products                SUCCESS
+========================================================================
+
+--- RUNNING GOLD LAYER ---
+26/08/23 10:59:44 WARN Utils: Your hostname, TTNPL-lakshayapapnai resolves to a loopback address: 127.0.1.1; using 192.168.0.9 instead (on interface wlp0s20f3)
+26/08/23 10:59:44 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+:: loading settings :: url = jar:file:/home/lakshaya-papnai/C1%20Assesment/venv_spark/lib/python3.12/site-packages/pyspark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /home/lakshaya-papnai/.ivy2/cache
+The jars for the packages stored in: /home/lakshaya-papnai/.ivy2/jars
+io.delta#delta-core_2.12 added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-600d3fb6-87ec-4ab7-ba6c-39050cb7b18f;1.0
+	confs: [default]
+	found io.delta#delta-core_2.12;2.4.0 in central
+	found io.delta#delta-storage;2.4.0 in central
+	found org.antlr#antlr4-runtime;4.9.3 in central
+:: resolution report :: resolve 138ms :: artifacts dl 6ms
+	:: modules in use:
+	io.delta#delta-core_2.12;2.4.0 from central in [default]
+	io.delta#delta-storage;2.4.0 from central in [default]
+	org.antlr#antlr4-runtime;4.9.3 from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   3   |   0   |   0   |   0   ||   3   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-600d3fb6-87ec-4ab7-ba6c-39050cb7b18f
+	confs: [default]
+	0 artifacts copied, 3 already retrieved (0kB/14ms)
+26/08/23 10:59:44 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/08/23 10:59:50 WARN package: Truncated the string representation of a plan since it was too large. This behavior can be adjusted by setting 'spark.sql.debug.maxToStringFields'.
+
+[Stage 4:============>                                            (11 + 8) / 50]
+
+[Stage 4:======================>                                  (20 + 8) / 50]
+
+[Stage 4:============================>                           (25 + 10) / 50]
+
+[Stage 4:=======================================>                 (35 + 9) / 50]
+
+[Stage 4:=======================================================> (49 + 1) / 50]
+
+                                                                                
+
+[Stage 7:=====================>                                   (19 + 8) / 50]
+
+[Stage 7:===================================>                     (31 + 9) / 50]
+
+[Stage 7:======================================================>  (48 + 2) / 50]
+
+                                                                                
+
+[Stage 9:>                                                          (0 + 2) / 2]
+
+[Stage 9:=============================>                             (1 + 1) / 2]
+
+                                                                                
+
+[Stage 20:=====================>                                  (19 + 8) / 50]
+
+[Stage 20:====================================>                   (33 + 8) / 50]
+
+[Stage 20:================================================>       (43 + 7) / 50]
+
+                                                                                
+
+[Stage 25:===================================================>    (46 + 4) / 50]
+
+                                                                                
+26/08/23 11:00:01 WARN SparkSession: Using an existing Spark session; only runtime SQL configurations will take effect.
+
+[Stage 44:=============================>                            (1 + 1) / 2]
+
+                                                                                
+
+[Stage 55:=========================================>              (37 + 8) / 50]
+
+                                                                                
+26/08/23 11:00:08 WARN SparkSession: Using an existing Spark session; only runtime SQL configurations will take effect.
+
+[Stage 74:=============================>                            (1 + 1) / 2]
+
+                                                                                
+
+[Stage 85:================================================>       (43 + 7) / 50]
+
+                                                                                
+
+[Stage 102:=========================================>             (38 + 8) / 50]
+
+                                                                                
+26/08/23 11:00:16 WARN SparkSession: Using an existing Spark session; only runtime SQL configurations will take effect.
+26/08/23 11:00:17 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/08/23 11:00:17 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/08/23 11:00:17 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/08/23 11:00:17 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/08/23 11:00:17 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/08/23 11:00:18 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/08/23 11:00:18 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/08/23 11:00:18 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/08/23 11:00:18 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+
+[Stage 141:===================================>                   (32 + 8) / 50]
+
+[Stage 141:=================================================>     (45 + 5) / 50]
+
+                                                                                
+
+[Stage 158:===================================>                   (32 + 8) / 50]
+
+[Stage 158:================================================>      (44 + 6) / 50]
+
+                                                                                
+
+[Stage 163:=============================================>         (41 + 8) / 50]
+
+                                                                                
+========================================================================
+  GOLD TABLE CREATION PIPELINE STARTED
+  Start time: 2026-08-23 10:59:42
+========================================================================
+
+>>> Running: Sales by Product (01_sales_by_product.py)
+Writing gold_sales_by_product → output/delta/gold/gold_sales_by_product
+
+Total products with sales: 500
+
+Top 5 products by revenue:
++----------+---------------+-----------+------------+-------------+---------------+
+|product_id|product_name   |category   |total_orders|total_revenue|avg_order_value|
++----------+---------------+-----------+------------+-------------+---------------+
+|489       |Wireless Bottle|Toys       |235         |620743.73    |2641.46        |
+|293       |Smart Mouse    |Beauty     |222         |606266.07    |2730.93        |
+|214       |Digital T-Shirt|Electronics|224         |599626.71    |2676.90        |
+|69        |Ergonomic Bag  |Sports     |217         |591938.64    |2727.83        |
+|143       |Leather Shoes  |Electronics|212         |589252.41    |2779.49        |
++----------+---------------+-----------+------------+-------------+---------------+
+only showing top 5 rows
+
+Revenue by category:
++--------------+-------------+----------------+
+|category      |product_count|category_revenue|
++--------------+-------------+----------------+
+|Sports        |81           |23936942.08     |
+|Beauty        |86           |22782989.29     |
+|Books         |82           |21678646.86     |
+|Electronics   |66           |20003174.30     |
+|Home & Kitchen|73           |19549597.92     |
+|Toys          |61           |17088770.32     |
+|Clothing      |51           |14002135.22     |
++--------------+-------------+----------------+
+
+gold_sales_by_product written successfully.
+<<< Sales by Product: SUCCESS in 18.87s
+
+>>> Running: Revenue by Customer (02_revenue_by_customer.py)
+Writing gold_revenue_by_customer → output/delta/gold/gold_revenue_by_customer
+
+Total customers with orders: 9949
+
+Top 5 customers by revenue:
++-----------+---------------+----------------+------------+-------------+---------------+---------------------+
+|customer_id|customer_name  |customer_segment|total_orders|total_revenue|avg_order_value|lifetime_value_actual|
++-----------+---------------+----------------+------------+-------------+---------------+---------------------+
+|5203       |Kimberly Horton|Standard        |112         |171927.68    |1535.07        |7637.42              |
+|577        |Renee Gonzales |Standard        |128         |154887.60    |1210.06        |45362.95             |
+|1732       |Douglas Santos |Standard        |128         |139030.32    |1086.17        |29950.45             |
+|6341       |Cody Moran     |Basic           |80          |136448.16    |1705.60        |12958.60             |
+|6364       |Tina Sims      |Premium         |96          |123573.84    |1287.23        |36591.24             |
++-----------+---------------+----------------+------------+-------------+---------------+---------------------+
+only showing top 5 rows
+
+Revenue breakdown by customer_segment:
++----------------+--------------+---------------+------------------------+
+|customer_segment|customer_count|segment_revenue|avg_revenue_per_customer|
++----------------+--------------+---------------+------------------------+
+|Standard        |5074          |71328598.72    |14057.67                |
+|Basic           |2905          |40141549.23    |13818.09                |
+|Premium         |1970          |27830757.64    |14127.29                |
++----------------+--------------+---------------+------------------------+
+
+gold_revenue_by_customer written successfully.
+<<< Revenue by Customer: SUCCESS in 6.33s
+
+>>> Running: Daily and Weekly Trends (03_daily_weekly_trends.py)
+Writing gold_daily_trends  → output/delta/gold/gold_daily_trends
+Writing gold_weekly_trends → output/delta/gold/gold_weekly_trends
+
+Date range of completed orders:
++--------------+------------+----------------------+
+|earliest_order|latest_order|total_days_with_orders|
++--------------+------------+----------------------+
+|2022-01-01    |2024-12-30  |1095                  |
++--------------+------------+----------------------+
+
+Total day-level rows: 1095
+Total week-level rows: 156
+
+Top 5 highest revenue days:
++----------+------------+-------------+
+|order_date|daily_orders|daily_revenue|
++----------+------------+-------------+
+|2023-08-30|80          |127073.82    |
+|2022-06-04|74          |122273.18    |
+|2022-11-23|83          |122040.54    |
+|2024-12-03|78          |119383.03    |
+|2022-10-23|78          |117440.93    |
++----------+------------+-------------+
+
+
+Sample of gold_weekly_trends (first 5 rows):
++----------+-----------+-------------+--------------+----------------------+
+|order_year|week_number|weekly_orders|weekly_revenue|weekly_avg_order_value|
++----------+-----------+-------------+--------------+----------------------+
+|2022      |1          |392          |552282.68     |1408.88               |
+|2022      |2          |359          |476801.95     |1328.14               |
+|2022      |3          |386          |544378.35     |1410.31               |
+|2022      |4          |363          |517190.07     |1424.77               |
+|2022      |5          |383          |519331.67     |1355.96               |
++----------+-----------+-------------+--------------+----------------------+
+only showing top 5 rows
+
+gold_daily_trends and gold_weekly_trends written successfully.
+<<< Daily and Weekly Trends: SUCCESS in 8.7s
+
+>>> Running: Customer Segmentation (04_customer_segmentation.py)
+Writing gold_customer_segment_detail → output/delta/gold/gold_customer_segment_detail
+Writing gold_customer_segmentation → output/delta/gold/gold_customer_segmentation
+
+Total customers segmented: 9950
+Customers with NULL/Unknown segment: 0  (expected: 0)
+
+Segment summary:
++------------+--------------+-----------+-------------+
+|segment_type|customer_count|avg_revenue|total_revenue|
++------------+--------------+-----------+-------------+
+|Repeat      |7783          |6839.47    |53231585.20  |
+|High-Value  |1990          |15285.51   |30418171.15  |
+|One-Time    |150           |1359.10    |203865.69    |
+|Inactive    |27            |0.00       |0.00         |
++------------+--------------+-----------+-------------+
+
+
+Count per segment_type (from detail table for cross-check):
++------------+-----+
+|segment_type|count|
++------------+-----+
+|Repeat      |7783 |
+|High-Value  |1990 |
+|One-Time    |150  |
+|Inactive    |27   |
++------------+-----+
+
+gold_customer_segmentation and gold_customer_segment_detail written successfully.
+<<< Customer Segmentation: SUCCESS in 7.22s
+
+========================================================================
+  GOLD TABLE CREATION PIPELINE — MASTER SUMMARY
+========================================================================
+  Overall Status : ALL SUCCEEDED
+  Total Duration : 41.12s
+  Start Time     : 2026-08-23 10:59:42
+  End Time       : 2026-08-23 11:00:24
+------------------------------------------------------------------------
+  Script                       Status       Duration  Gold Tables Created
+------------------------------------------------------------------------
+  Sales by Product             SUCCESS        18.87s  gold_sales_by_product
+  Revenue by Customer          SUCCESS         6.33s  gold_revenue_by_customer
+  Daily and Weekly Trends      SUCCESS          8.7s  gold_daily_trends, gold_weekly_trends
+  Customer Segmentation        SUCCESS         7.22s  gold_customer_segmentation, gold_customer_segment_detail
+
+========================================================================
+  GOLD LAYER — FINAL TABLE INVENTORY
+========================================================================
+  ✓ gold_sales_by_product                    → output/delta/gold/gold_sales_by_product
+  ✓ gold_revenue_by_customer                 → output/delta/gold/gold_revenue_by_customer
+  ✓ gold_daily_trends                        → output/delta/gold/gold_daily_trends
+  ✓ gold_weekly_trends                       → output/delta/gold/gold_weekly_trends
+  ✓ gold_customer_segmentation               → output/delta/gold/gold_customer_segmentation
+  ✓ gold_customer_segment_detail             → output/delta/gold/gold_customer_segment_detail
+========================================================================
+
+--- RUNNING LOCAL TESTS ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0 -- /home/lakshaya-papnai/C1 Assesment/venv_spark/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/lakshaya-papnai/C1 Assesment
+plugins: Faker-40.37.0
+collecting ... collected 9 items
+
+tests/test_data_quality.py::test_completeness_check_catches_null_emails PASSED [ 11%]
+tests/test_data_quality.py::test_completeness_check_catches_null_customer_ids PASSED [ 22%]
+tests/test_data_quality.py::test_completeness_check_catches_null_product_ids PASSED [ 33%]
+tests/test_data_quality.py::test_uniqueness_check_catches_duplicate_customer_ids PASSED [ 44%]
+tests/test_data_quality.py::test_uniqueness_check_catches_duplicate_order_ids PASSED [ 55%]
+tests/test_data_quality.py::test_referential_integrity_catches_orphan_customer_ids PASSED [ 66%]
+tests/test_data_quality.py::test_referential_integrity_catches_orphan_product_ids PASSED [ 77%]
+tests/test_data_quality.py::test_products_have_no_quality_issues PASSED  [ 88%]
+tests/test_data_quality.py::test_total_amount_equals_quantity_times_unit_price PASSED [100%]
+
+============================== 9 passed in 1.67s ===============================
+
+======================================
+          PIPELINE SUMMARY            
+======================================
+BRONZE: PASSED
+SILVER: PASSED
+GOLD: PASSED
+TESTS: 9 passed, 0 failed
