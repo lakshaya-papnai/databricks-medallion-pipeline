@@ -1,0 +1,10 @@
+venv/
+venv_spark/
+__pycache__/
+.DS_Store
+*.pyc
+.env
+output/
+pipeline_run.log
+*.log
+.pytest_cache/

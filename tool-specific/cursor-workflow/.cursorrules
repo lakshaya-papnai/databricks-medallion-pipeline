@@ -1,0 +1,49 @@
+# .cursorrules — PROJECT CONTEXT
+
+## Project Overview
+Databricks Medallion Architecture Data Pipeline for an e-commerce company.
+The pipeline ingests daily sales data from 3 sources (customers, orders, products) into Databricks to create a Bronze -> Silver -> Gold -> Dashboard architecture.
+
+## Data Schemas
+- **customers**: `customer_id` (INT PK), `customer_name` (STRING), `email` (STRING), `country` (STRING), `signup_date` (DATE), `customer_segment` (Premium/Standard/Basic), `lifetime_value` (DECIMAL) — 10,000 rows
+- **orders**: `order_id` (INT PK), `customer_id` (INT FK), `order_date` (DATE), `product_id` (INT FK), `quantity` (INT), `unit_price` (DECIMAL), `total_amount` (DECIMAL), `order_status` (Pending/Completed/Cancelled), `payment_date` (DATE nullable) — 100,000 rows
+- **products**: `product_id` (INT PK), `product_name` (STRING), `category` (STRING), `price` (DECIMAL), `cost` (DECIMAL), `stock_quantity` (INT), `reorder_level` (INT) — 500 rows
+
+## Intentional Data Quality Issues to be Planted
+- **customers**: 50 NULL emails, 10 duplicate `customer_ids`
+- **orders**: 100 NULL `customer_ids`, 200 NULL `product_ids`, 50 orphan `customer_ids` (not in customers table), 30 orphan `product_ids` (not in products table), 20 duplicate `order_ids`
+
+## Hard Rules (Follow STRICTLY)
+1. **Never delete bad rows** — always flag with `quality_check_result` column (PASS/FAIL + reason).
+2. **Always add** `ingestion_timestamp` and `source_file_name` to Bronze tables.
+3. **Silver reads from Bronze Delta tables only**, never from raw CSVs.
+4. **Gold reads from Silver Delta tables only**.
+5. **All DBFS paths** must use the format: `/FileStore/tables/`
+6. **Code Quality**: All code must be commented, readable, and production-style.
+7. **File Context**: Always tell me which file the code belongs to before showing it.
+8. **Generation Limit**: Generate **one file at a time only** — never multiple files in one response unless I explicitly ask.
+
+## To Be Generated Later (One file at a time)
+- `src/data_generation/generate_sample_data.py`
+- `src/bronze/` — 4 files
+- `src/silver/` — 6 files
+- `src/gold/` — 5 files
+- `src/dashboard/dashboard_queries.sql`
+- `database/schema.sql`
+
+## Progress Tracker
+- [x] .cursorrules created
+- [x] requirements-analysis.md
+- [x] design-notes.md
+- [x] data-quality-strategy.md
+- [x] data-model.md
+- [x] tool-workflow.md
+- [x] generate_sample_data.py
+- [x] Bronze layer (4 files)
+- [x] Silver layer (6 files)
+- [x] Gold layer (5 files)
+- [x] Dashboard queries
+- [x] database/schema.sql
+- [x] README.md
+- [x] reflection.md
+- [x] final-ai-usage-summary.md
