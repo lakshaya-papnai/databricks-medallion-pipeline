@@ -1,0 +1,501 @@
+product_id,product_name,category,price,cost,stock_quantity,reorder_level
+1,Leather Speaker,Clothing,321.52,99.67,142,23
+2,Smart Shoes,Sports,339.97,223.32,32,13
+3,Modern Headphones,Books,51.38,20.2,203,93
+4,Digital Shoes,Home & Kitchen,352.16,164.74,828,10
+5,Wooden Desk,Home & Kitchen,380.61,138.49,159,37
+6,Smart Chair,Electronics,478.82,208.11,367,54
+7,Luxury Camera,Books,303.84,189.25,127,58
+8,Ergonomic Shoes,Toys,44.01,18.36,370,83
+9,Ergonomic Speaker,Toys,100.18,32.84,296,20
+10,Wooden Bottle,Sports,428.38,276.99,650,56
+11,Ergonomic Bottle,Beauty,85.51,37.8,959,97
+12,Portable Bag,Beauty,325.78,177.11,250,30
+13,Ergonomic Keyboard,Books,233.82,95.39,224,97
+14,Wireless Speaker,Toys,165.52,100.52,32,50
+15,Modern Keyboard,Home & Kitchen,203.58,66.46,217,93
+16,Ergonomic Camera,Clothing,252.12,164.85,271,27
+17,Leather Keyboard,Books,127.08,66.66,438,84
+18,Portable Bag,Sports,202.7,78.59,93,16
+19,Portable Mouse,Sports,431.25,155.74,610,18
+20,Digital Bag,Home & Kitchen,195.46,105.23,994,80
+21,Luxury T-Shirt,Beauty,431.09,131.31,906,78
+22,Steel T-Shirt,Home & Kitchen,376.68,228.81,445,30
+23,Luxury Bottle,Books,229.59,156.47,780,32
+24,Ergonomic Bottle,Toys,256.3,87.8,654,74
+25,Portable Bag,Toys,306.44,110.67,944,77
+26,Digital Headphones,Electronics,459.65,248.02,951,56
+27,Leather Speaker,Electronics,439.97,278.35,246,82
+28,Digital T-Shirt,Toys,473.74,158.35,545,26
+29,Classic Watch,Home & Kitchen,68.55,33.6,540,87
+30,Classic Keyboard,Beauty,214.45,82.5,205,49
+31,Steel Camera,Books,202.5,115.16,462,25
+32,Wireless Shoes,Books,127.71,41.58,235,85
+33,Ergonomic Headphones,Clothing,114.01,37.44,69,14
+34,Cotton Bottle,Beauty,430.52,141.36,497,37
+35,Modern Shoes,Sports,271.92,160.25,248,70
+36,Smart Mouse,Sports,404.71,152.24,362,64
+37,Wireless Mouse,Beauty,208.5,134.59,661,22
+38,Smart Speaker,Clothing,35.0,20.69,194,78
+39,Leather Camera,Clothing,227.06,106.43,895,19
+40,Classic T-Shirt,Electronics,224.35,144.6,667,79
+41,Cotton Watch,Sports,418.83,287.99,497,71
+42,Wireless Watch,Sports,110.8,51.01,2,59
+43,Digital Bottle,Sports,136.28,83.63,713,81
+44,Cotton Bottle,Clothing,332.63,164.54,991,17
+45,Luxury Desk,Electronics,291.69,150.77,51,84
+46,Classic Watch,Electronics,241.01,160.94,983,75
+47,Modern T-Shirt,Beauty,44.66,16.72,882,40
+48,Modern Speaker,Books,204.87,138.62,608,15
+49,Modern Shoes,Books,311.59,145.73,323,43
+50,Cotton Bottle,Sports,106.11,62.23,134,95
+51,Smart Headphones,Sports,324.52,156.71,636,82
+52,Cotton Bag,Home & Kitchen,498.07,164.02,135,54
+53,Steel Bottle,Clothing,441.03,287.42,448,79
+54,Ergonomic Bag,Electronics,353.25,192.41,683,80
+55,Portable Bottle,Electronics,153.19,86.61,911,23
+56,Leather Shoes,Clothing,372.5,134.91,734,53
+57,Leather Bag,Sports,105.78,58.57,257,16
+58,Leather Headphones,Electronics,50.69,23.8,341,26
+59,Luxury Camera,Books,320.37,129.68,722,64
+60,Luxury Watch,Books,282.65,97.44,36,57
+61,Portable Headphones,Home & Kitchen,293.34,105.38,373,15
+62,Cotton Mouse,Electronics,449.97,172.8,362,81
+63,Modern Keyboard,Clothing,442.65,204.75,947,40
+64,Portable Chair,Electronics,432.98,298.97,183,52
+65,Ergonomic Keyboard,Toys,392.28,182.29,254,44
+66,Wooden Headphones,Toys,83.8,48.65,481,38
+67,Steel Bottle,Toys,103.79,69.27,814,39
+68,Wooden Desk,Home & Kitchen,115.35,65.06,885,18
+69,Ergonomic Bag,Sports,483.61,199.08,695,78
+70,Leather Watch,Books,168.92,52.54,985,43
+71,Steel Keyboard,Toys,23.94,12.89,321,65
+72,Wooden Shoes,Clothing,305.07,153.93,260,15
+73,Classic Mouse,Beauty,355.85,107.0,962,95
+74,Ergonomic Desk,Books,102.53,48.45,321,94
+75,Leather Bag,Home & Kitchen,424.77,249.72,682,62
+76,Classic Watch,Clothing,166.46,96.36,430,95
+77,Portable Shoes,Books,470.48,268.61,308,61
+78,Leather Speaker,Sports,276.23,82.91,804,84
+79,Digital Camera,Beauty,305.3,130.94,218,75
+80,Luxury Watch,Beauty,239.23,158.0,86,46
+81,Steel T-Shirt,Toys,260.15,143.91,974,40
+82,Cotton Watch,Electronics,338.03,131.78,47,41
+83,Smart Camera,Sports,492.05,267.93,907,90
+84,Wooden Camera,Sports,289.96,170.3,249,28
+85,Smart Chair,Clothing,329.75,99.66,180,99
+86,Cotton T-Shirt,Sports,261.39,83.67,136,69
+87,Modern Desk,Toys,335.45,233.19,912,66
+88,Classic Chair,Toys,308.26,181.17,928,80
+89,Digital Camera,Home & Kitchen,225.73,82.09,769,41
+90,Classic Camera,Beauty,420.73,172.89,244,45
+91,Cotton Bottle,Home & Kitchen,222.74,130.4,327,79
+92,Wooden Keyboard,Clothing,44.89,16.18,723,37
+93,Classic Camera,Sports,36.79,17.04,63,36
+94,Modern Keyboard,Electronics,417.28,190.19,877,83
+95,Steel Bottle,Toys,193.29,58.44,399,63
+96,Modern Speaker,Sports,271.42,161.18,224,44
+97,Steel Mouse,Beauty,220.74,68.78,817,61
+98,Portable Shoes,Books,363.47,231.24,27,60
+99,Smart Mouse,Sports,297.99,168.42,138,69
+100,Steel Speaker,Sports,94.96,38.37,334,53
+101,Wooden Bottle,Toys,381.81,172.44,83,70
+102,Steel Speaker,Beauty,14.59,7.53,70,93
+103,Cotton Speaker,Toys,24.93,7.79,20,89
+104,Ergonomic T-Shirt,Books,80.43,28.19,970,37
+105,Steel Watch,Books,235.19,94.66,621,24
+106,Leather T-Shirt,Books,390.01,142.55,26,49
+107,Wooden Chair,Beauty,290.02,192.34,203,19
+108,Cotton T-Shirt,Beauty,298.09,188.46,791,48
+109,Smart Shoes,Toys,425.9,230.06,42,54
+110,Smart Bag,Beauty,268.71,151.72,349,11
+111,Smart Chair,Home & Kitchen,425.54,267.64,650,68
+112,Luxury Bag,Beauty,355.12,168.4,276,88
+113,Digital Camera,Sports,405.06,208.71,845,85
+114,Smart Bottle,Sports,137.86,88.32,249,69
+115,Steel Headphones,Sports,287.08,162.85,871,51
+116,Leather Desk,Home & Kitchen,95.01,36.56,901,86
+117,Wireless Bag,Clothing,352.09,144.54,87,40
+118,Cotton Keyboard,Sports,361.44,179.07,661,72
+119,Leather Speaker,Sports,226.85,69.62,708,41
+120,Digital Bag,Books,156.57,83.39,352,64
+121,Steel Keyboard,Sports,498.33,259.21,277,49
+122,Cotton Desk,Electronics,129.44,45.08,760,78
+123,Cotton Speaker,Beauty,475.68,274.02,495,45
+124,Classic Shoes,Home & Kitchen,363.67,251.17,102,34
+125,Leather Headphones,Beauty,151.64,67.38,546,26
+126,Classic Bottle,Beauty,140.78,97.1,966,26
+127,Smart Headphones,Books,320.75,192.81,291,70
+128,Wireless Bottle,Toys,241.96,105.56,489,24
+129,Smart Shoes,Beauty,411.95,189.61,702,16
+130,Leather T-Shirt,Clothing,80.1,50.02,121,81
+131,Modern Speaker,Toys,383.4,208.0,535,58
+132,Modern Chair,Home & Kitchen,228.0,108.78,582,89
+133,Smart Speaker,Beauty,34.81,23.81,216,43
+134,Portable Bag,Electronics,331.91,120.42,160,10
+135,Digital Bottle,Electronics,207.22,119.31,237,46
+136,Digital T-Shirt,Beauty,354.94,206.29,239,43
+137,Ergonomic Speaker,Sports,394.97,217.24,117,79
+138,Leather Watch,Electronics,116.28,41.81,61,31
+139,Modern Bottle,Sports,397.35,213.78,127,69
+140,Leather Bag,Books,345.9,200.59,505,66
+141,Wooden Keyboard,Home & Kitchen,44.82,14.16,618,42
+142,Ergonomic Shoes,Books,17.8,6.97,973,12
+143,Leather Shoes,Electronics,499.79,284.34,781,32
+144,Leather Watch,Books,237.9,133.37,446,91
+145,Digital Desk,Sports,408.05,280.58,341,51
+146,Steel Chair,Beauty,336.72,216.54,507,46
+147,Classic Headphones,Sports,332.98,153.23,90,50
+148,Wooden Bag,Toys,129.94,45.01,1,94
+149,Wireless Speaker,Books,435.34,211.05,370,89
+150,Wireless Speaker,Home & Kitchen,379.44,208.75,562,26
+151,Luxury Camera,Electronics,464.2,220.61,29,90
+152,Portable Bottle,Books,306.39,121.24,14,80
+153,Smart Camera,Electronics,206.96,80.69,663,29
+154,Classic Keyboard,Home & Kitchen,251.7,147.66,425,71
+155,Classic Watch,Sports,490.22,194.86,195,86
+156,Smart Bottle,Toys,256.58,167.22,808,63
+157,Leather Headphones,Home & Kitchen,173.24,106.56,743,48
+158,Ergonomic Camera,Toys,419.55,223.19,152,67
+159,Classic Bag,Sports,271.6,118.97,466,51
+160,Cotton Shoes,Sports,435.45,301.47,239,62
+161,Luxury Chair,Sports,26.61,15.91,679,93
+162,Wireless Watch,Books,490.5,244.33,988,85
+163,Digital T-Shirt,Books,169.34,57.6,932,68
+164,Ergonomic Watch,Electronics,12.6,4.51,480,43
+165,Ergonomic T-Shirt,Toys,172.59,99.6,336,96
+166,Steel Mouse,Beauty,430.37,194.53,908,72
+167,Smart Speaker,Beauty,436.83,137.32,700,46
+168,Wooden T-Shirt,Toys,498.73,298.59,648,100
+169,Luxury Bottle,Electronics,436.93,208.62,47,51
+170,Steel Chair,Clothing,399.09,166.56,250,77
+171,Portable Watch,Clothing,208.97,119.68,80,88
+172,Cotton Camera,Books,436.07,238.92,146,39
+173,Leather Mouse,Electronics,233.27,93.68,920,69
+174,Portable T-Shirt,Sports,451.1,257.6,967,54
+175,Wooden Keyboard,Home & Kitchen,493.89,207.27,467,48
+176,Digital T-Shirt,Clothing,103.61,47.03,390,83
+177,Luxury Bottle,Electronics,182.68,76.42,849,94
+178,Ergonomic Keyboard,Electronics,200.92,60.93,932,87
+179,Leather Speaker,Books,373.86,236.7,821,55
+180,Leather Mouse,Toys,113.41,42.65,738,94
+181,Smart Mouse,Beauty,342.02,121.32,40,49
+182,Steel Keyboard,Clothing,395.36,123.88,92,47
+183,Cotton Watch,Toys,166.73,77.73,552,56
+184,Portable Bottle,Toys,267.77,178.17,966,71
+185,Steel T-Shirt,Sports,483.86,202.28,986,19
+186,Ergonomic Keyboard,Beauty,74.67,51.27,406,81
+187,Wireless Bottle,Books,186.06,114.66,126,68
+188,Leather Shoes,Sports,187.45,112.4,842,91
+189,Cotton Camera,Electronics,470.44,161.52,634,81
+190,Ergonomic T-Shirt,Beauty,167.36,91.05,843,69
+191,Wooden T-Shirt,Clothing,455.15,191.56,46,14
+192,Smart Speaker,Books,155.66,77.37,138,59
+193,Luxury Keyboard,Books,229.55,130.43,429,85
+194,Wooden Mouse,Electronics,372.42,134.74,853,72
+195,Leather Headphones,Beauty,309.75,209.27,379,37
+196,Steel T-Shirt,Beauty,224.47,152.69,376,79
+197,Wireless Chair,Home & Kitchen,451.34,251.82,194,25
+198,Smart Mouse,Clothing,474.76,298.95,657,91
+199,Steel Speaker,Clothing,300.59,92.74,805,82
+200,Classic Speaker,Books,106.58,67.35,221,39
+201,Modern Headphones,Home & Kitchen,167.64,60.19,879,28
+202,Portable T-Shirt,Beauty,493.83,254.86,887,13
+203,Cotton Shoes,Home & Kitchen,70.24,31.14,16,32
+204,Wooden Bag,Electronics,136.36,47.82,763,18
+205,Classic Shoes,Electronics,240.74,147.14,462,74
+206,Luxury Mouse,Books,114.67,62.61,308,68
+207,Digital Chair,Sports,323.45,101.07,702,23
+208,Smart T-Shirt,Home & Kitchen,247.68,164.43,622,28
+209,Ergonomic Shoes,Books,37.51,15.38,729,51
+210,Leather Camera,Books,193.55,104.32,619,65
+211,Ergonomic Mouse,Toys,54.09,31.41,564,37
+212,Wooden Desk,Toys,217.88,142.76,464,61
+213,Wooden Desk,Beauty,210.91,71.29,261,57
+214,Digital T-Shirt,Electronics,477.03,274.16,851,20
+215,Luxury Desk,Toys,51.15,17.32,133,81
+216,Classic Desk,Beauty,34.69,23.68,125,62
+217,Wooden Keyboard,Electronics,180.03,101.92,991,46
+218,Modern Bag,Clothing,302.2,133.17,158,94
+219,Steel Bag,Home & Kitchen,243.68,155.69,117,45
+220,Classic Shoes,Books,289.18,180.13,691,92
+221,Ergonomic Keyboard,Home & Kitchen,280.59,152.53,29,33
+222,Steel Desk,Electronics,140.27,84.86,185,28
+223,Portable Keyboard,Beauty,285.33,131.34,995,13
+224,Wooden Chair,Sports,50.42,25.82,349,30
+225,Modern Shoes,Electronics,188.18,110.77,904,16
+226,Wireless Mouse,Electronics,82.01,49.35,278,66
+227,Digital Chair,Home & Kitchen,332.66,164.42,220,75
+228,Leather Mouse,Beauty,61.34,28.95,607,72
+229,Cotton Chair,Books,265.83,112.54,56,10
+230,Portable Bottle,Home & Kitchen,106.19,72.01,335,25
+231,Portable Watch,Sports,8.83,5.29,545,100
+232,Ergonomic Desk,Electronics,118.9,62.24,406,15
+233,Smart Desk,Books,220.93,106.91,439,83
+234,Leather T-Shirt,Sports,205.19,114.1,21,51
+235,Digital Keyboard,Home & Kitchen,90.08,61.17,90,65
+236,Modern Chair,Books,423.02,168.08,80,60
+237,Cotton Desk,Toys,435.91,260.81,172,19
+238,Classic Speaker,Toys,257.69,89.06,357,54
+239,Portable Speaker,Electronics,365.05,229.1,149,42
+240,Ergonomic T-Shirt,Clothing,102.65,55.53,974,90
+241,Modern Camera,Beauty,249.59,150.2,946,82
+242,Steel Mouse,Home & Kitchen,323.28,224.55,154,66
+243,Leather Bottle,Books,38.8,18.5,57,55
+244,Digital Headphones,Electronics,256.13,108.64,377,46
+245,Smart Shoes,Books,42.98,27.75,519,59
+246,Luxury Headphones,Sports,234.04,122.1,930,83
+247,Digital Bag,Clothing,327.66,140.44,980,17
+248,Steel Keyboard,Electronics,228.01,142.37,516,92
+249,Digital Camera,Books,90.42,36.09,535,88
+250,Leather Chair,Sports,83.58,37.54,793,53
+251,Ergonomic Mouse,Home & Kitchen,341.05,109.46,67,52
+252,Leather Bottle,Beauty,51.78,29.58,872,94
+253,Portable Desk,Electronics,482.38,261.01,596,94
+254,Ergonomic Keyboard,Beauty,75.01,33.0,401,26
+255,Leather Bag,Sports,299.55,202.26,658,52
+256,Luxury Mouse,Books,407.53,231.5,95,92
+257,Wireless Desk,Home & Kitchen,336.88,169.58,184,37
+258,Cotton Speaker,Clothing,174.16,105.62,158,19
+259,Classic Bag,Toys,151.42,93.16,756,77
+260,Modern Watch,Books,23.69,10.3,385,29
+261,Modern Watch,Beauty,85.31,53.96,448,15
+262,Cotton Camera,Books,208.38,118.89,291,67
+263,Digital Speaker,Home & Kitchen,120.83,47.81,694,83
+264,Leather Chair,Books,492.3,238.6,540,63
+265,Modern Watch,Toys,483.3,302.91,256,16
+266,Classic T-Shirt,Beauty,322.38,209.43,866,76
+267,Portable Bottle,Sports,426.33,176.51,927,75
+268,Cotton Camera,Home & Kitchen,77.94,37.02,952,13
+269,Steel Speaker,Sports,210.37,96.47,83,57
+270,Smart Keyboard,Beauty,116.15,49.65,343,28
+271,Digital Keyboard,Toys,73.11,30.32,142,100
+272,Smart Headphones,Home & Kitchen,237.21,129.55,220,29
+273,Classic Chair,Electronics,276.66,163.48,794,46
+274,Cotton Chair,Beauty,122.63,42.77,812,89
+275,Digital Shoes,Books,231.27,79.64,16,90
+276,Portable Bottle,Sports,260.11,103.21,1,88
+277,Portable Mouse,Beauty,179.64,94.9,87,77
+278,Classic Bag,Books,487.45,159.43,805,74
+279,Digital Headphones,Beauty,279.31,127.42,396,57
+280,Smart Desk,Clothing,130.56,40.02,750,94
+281,Luxury Desk,Clothing,315.99,192.31,45,55
+282,Portable Mouse,Sports,275.28,172.16,712,71
+283,Smart Keyboard,Toys,317.71,198.44,966,68
+284,Cotton Headphones,Home & Kitchen,23.31,8.87,955,49
+285,Classic Camera,Home & Kitchen,260.11,180.95,37,92
+286,Wireless Mouse,Home & Kitchen,99.6,44.1,279,25
+287,Wooden Keyboard,Sports,400.67,190.23,916,59
+288,Luxury Camera,Home & Kitchen,172.82,64.76,946,76
+289,Wooden T-Shirt,Sports,137.03,45.64,616,33
+290,Smart Desk,Beauty,275.01,117.84,302,49
+291,Portable Keyboard,Sports,225.73,132.52,359,67
+292,Steel Shoes,Sports,25.97,16.83,281,91
+293,Smart Mouse,Beauty,490.11,332.86,415,56
+294,Portable Headphones,Clothing,258.98,155.38,869,87
+295,Portable T-Shirt,Clothing,340.65,161.9,797,92
+296,Modern Headphones,Books,186.33,84.43,157,96
+297,Digital T-Shirt,Books,227.71,102.1,140,77
+298,Leather Speaker,Electronics,186.64,79.46,26,33
+299,Classic T-Shirt,Home & Kitchen,252.03,114.62,793,43
+300,Modern Bottle,Beauty,353.5,136.39,938,72
+301,Smart Camera,Clothing,104.09,36.88,920,66
+302,Steel Mouse,Home & Kitchen,498.64,311.25,726,18
+303,Leather Watch,Beauty,277.25,115.38,726,99
+304,Classic Speaker,Electronics,320.66,198.0,205,27
+305,Steel Bag,Books,122.18,60.8,377,69
+306,Modern T-Shirt,Electronics,402.81,209.73,316,60
+307,Classic Chair,Toys,499.8,293.66,419,83
+308,Ergonomic T-Shirt,Sports,41.51,28.6,477,97
+309,Classic Mouse,Books,261.09,91.73,186,26
+310,Wireless T-Shirt,Books,219.15,145.58,156,48
+311,Luxury Speaker,Home & Kitchen,86.51,37.12,970,76
+312,Leather Speaker,Beauty,447.99,285.98,979,80
+313,Modern Bag,Electronics,140.85,77.47,514,92
+314,Portable Watch,Beauty,88.47,59.86,639,87
+315,Wireless Headphones,Electronics,172.12,115.25,46,92
+316,Cotton Shoes,Sports,386.66,156.93,632,91
+317,Classic Bottle,Beauty,19.99,13.11,979,48
+318,Ergonomic Chair,Home & Kitchen,244.06,151.77,464,19
+319,Wooden Camera,Sports,345.86,125.63,208,53
+320,Luxury Desk,Beauty,305.3,129.76,881,54
+321,Steel Bag,Books,487.81,171.86,108,50
+322,Digital Speaker,Clothing,124.66,43.51,99,16
+323,Modern Chair,Clothing,148.65,67.44,985,30
+324,Luxury Desk,Clothing,407.67,274.57,781,30
+325,Digital Bottle,Sports,251.64,127.3,23,21
+326,Cotton Speaker,Books,472.89,237.47,361,16
+327,Ergonomic Mouse,Sports,30.02,14.95,292,78
+328,Portable Bottle,Beauty,9.05,3.1,374,61
+329,Modern Bag,Clothing,186.14,85.67,371,80
+330,Digital Bag,Home & Kitchen,147.86,67.21,845,89
+331,Smart Chair,Home & Kitchen,341.8,118.78,813,53
+332,Portable Speaker,Books,281.13,125.45,521,61
+333,Portable Keyboard,Home & Kitchen,252.54,80.34,823,70
+334,Classic Watch,Home & Kitchen,262.07,94.23,953,88
+335,Modern Keyboard,Toys,162.67,74.37,306,85
+336,Classic Camera,Beauty,171.5,108.27,576,48
+337,Steel Mouse,Electronics,240.07,73.62,426,84
+338,Luxury Mouse,Electronics,157.3,103.74,611,70
+339,Modern Shoes,Clothing,136.44,76.71,738,16
+340,Ergonomic Keyboard,Books,293.84,108.19,793,58
+341,Wireless Shoes,Beauty,78.15,44.72,112,34
+342,Portable Chair,Beauty,14.37,6.11,208,62
+343,Digital Keyboard,Beauty,253.4,138.0,63,100
+344,Steel Mouse,Sports,73.35,28.09,538,58
+345,Classic Desk,Books,160.31,59.2,362,96
+346,Ergonomic Keyboard,Home & Kitchen,387.13,227.78,624,71
+347,Classic Bottle,Clothing,100.17,39.93,964,48
+348,Luxury Keyboard,Sports,386.73,225.06,324,71
+349,Luxury Bottle,Home & Kitchen,177.66,119.65,124,83
+350,Wooden Desk,Toys,339.93,153.61,823,28
+351,Luxury T-Shirt,Home & Kitchen,148.77,61.75,946,66
+352,Cotton Speaker,Toys,329.71,197.47,551,44
+353,Portable T-Shirt,Books,466.85,270.06,758,85
+354,Classic Speaker,Beauty,123.44,39.54,238,16
+355,Digital T-Shirt,Beauty,54.6,23.59,789,27
+356,Portable Chair,Beauty,7.56,3.93,957,70
+357,Leather Desk,Home & Kitchen,241.34,91.66,661,17
+358,Modern Speaker,Books,454.43,152.59,756,14
+359,Portable Headphones,Toys,457.05,169.12,406,73
+360,Leather Headphones,Electronics,97.22,58.29,305,82
+361,Steel Bottle,Sports,303.38,203.68,656,79
+362,Portable Bag,Sports,264.54,173.46,279,34
+363,Luxury Camera,Beauty,405.36,175.23,263,33
+364,Leather Shoes,Beauty,11.97,5.21,775,34
+365,Wooden Chair,Books,91.87,59.02,335,21
+366,Portable Camera,Home & Kitchen,203.41,68.78,958,41
+367,Digital Bottle,Home & Kitchen,8.38,3.8,309,84
+368,Ergonomic Desk,Beauty,362.83,110.51,241,17
+369,Portable Chair,Beauty,335.55,163.13,514,100
+370,Ergonomic Bottle,Home & Kitchen,386.07,222.42,629,38
+371,Portable Camera,Beauty,113.47,40.1,620,57
+372,Digital Bag,Toys,210.84,109.57,680,37
+373,Modern T-Shirt,Books,382.12,218.62,457,77
+374,Modern T-Shirt,Electronics,353.36,117.05,848,80
+375,Classic Watch,Clothing,451.93,172.12,335,76
+376,Luxury Shoes,Sports,223.71,127.99,93,75
+377,Portable Bag,Sports,225.51,72.67,467,82
+378,Leather Keyboard,Electronics,33.58,16.28,405,42
+379,Modern T-Shirt,Electronics,409.14,244.8,433,54
+380,Wireless T-Shirt,Sports,351.69,181.64,32,46
+381,Ergonomic Keyboard,Beauty,207.39,126.01,986,63
+382,Digital Chair,Sports,190.36,124.98,82,97
+383,Portable Mouse,Toys,482.25,313.38,356,25
+384,Classic Watch,Beauty,93.34,48.06,228,10
+385,Digital Mouse,Beauty,379.31,262.25,557,64
+386,Cotton Camera,Home & Kitchen,268.31,168.86,158,45
+387,Smart Headphones,Toys,98.3,63.9,676,63
+388,Wireless Speaker,Clothing,309.39,208.68,68,22
+389,Ergonomic Keyboard,Toys,299.0,143.09,49,41
+390,Cotton Bag,Clothing,371.57,171.26,772,17
+391,Cotton Keyboard,Books,74.37,51.87,326,83
+392,Steel Speaker,Home & Kitchen,300.97,171.26,897,28
+393,Wooden Bottle,Home & Kitchen,492.92,250.65,62,81
+394,Portable Mouse,Beauty,474.52,309.33,437,81
+395,Ergonomic Mouse,Sports,250.33,172.46,804,77
+396,Portable Bottle,Sports,162.77,75.94,188,78
+397,Leather Keyboard,Clothing,239.39,153.15,825,69
+398,Wooden Bag,Books,457.8,240.32,137,59
+399,Ergonomic T-Shirt,Sports,125.21,47.75,867,57
+400,Cotton Headphones,Home & Kitchen,50.77,29.95,386,96
+401,Smart Speaker,Toys,304.46,96.15,779,85
+402,Digital Speaker,Toys,363.53,190.32,928,52
+403,Cotton Speaker,Beauty,155.08,102.91,120,71
+404,Luxury Speaker,Sports,457.65,264.64,937,40
+405,Wooden Camera,Books,278.28,169.81,664,55
+406,Digital Camera,Electronics,157.67,69.98,822,70
+407,Cotton Desk,Home & Kitchen,382.01,163.54,423,15
+408,Portable Headphones,Home & Kitchen,283.45,110.12,566,84
+409,Portable Speaker,Home & Kitchen,291.68,136.22,235,58
+410,Classic Mouse,Beauty,287.05,114.33,345,42
+411,Luxury Mouse,Beauty,382.86,189.69,502,68
+412,Portable Watch,Beauty,88.28,54.56,559,72
+413,Ergonomic Headphones,Books,96.1,63.02,34,19
+414,Wireless Chair,Clothing,472.87,268.25,862,90
+415,Wireless Speaker,Books,119.56,69.69,466,57
+416,Modern Camera,Beauty,34.92,19.38,499,12
+417,Wireless Headphones,Books,8.27,4.31,739,45
+418,Classic Keyboard,Beauty,270.19,112.04,440,32
+419,Portable Speaker,Clothing,57.97,19.62,634,77
+420,Wooden T-Shirt,Home & Kitchen,129.95,57.41,982,61
+421,Luxury Speaker,Home & Kitchen,232.2,92.25,700,20
+422,Wireless T-Shirt,Sports,328.6,211.38,388,58
+423,Wireless Keyboard,Clothing,278.59,89.83,84,73
+424,Steel Shoes,Toys,423.44,236.26,997,22
+425,Cotton Speaker,Toys,447.92,299.06,708,82
+426,Smart Mouse,Home & Kitchen,240.37,76.59,920,79
+427,Steel Headphones,Clothing,283.94,88.92,601,28
+428,Wooden T-Shirt,Home & Kitchen,377.37,220.79,166,82
+429,Wooden Mouse,Books,124.03,78.62,339,59
+430,Luxury Keyboard,Electronics,379.03,134.93,512,54
+431,Smart Desk,Books,31.58,15.0,787,88
+432,Steel Headphones,Beauty,477.65,219.09,279,67
+433,Wooden Chair,Clothing,247.85,109.63,696,84
+434,Modern Bottle,Toys,332.03,110.99,252,19
+435,Luxury Mouse,Clothing,45.61,16.5,757,59
+436,Wireless Bottle,Sports,161.76,55.42,368,44
+437,Wooden Camera,Books,55.6,18.62,568,75
+438,Steel Bag,Electronics,206.98,64.27,611,86
+439,Wireless Bottle,Sports,393.3,253.87,397,20
+440,Cotton Shoes,Books,363.8,190.56,173,97
+441,Leather Bottle,Sports,193.46,68.78,149,18
+442,Leather Camera,Toys,87.77,36.02,78,56
+443,Ergonomic Camera,Books,129.59,51.66,631,35
+444,Wireless Chair,Home & Kitchen,231.64,82.05,861,89
+445,Digital Desk,Sports,193.05,124.49,835,93
+446,Steel Shoes,Beauty,487.24,172.7,205,71
+447,Steel Bottle,Beauty,160.52,110.09,711,91
+448,Cotton Desk,Sports,248.05,131.55,287,60
+449,Cotton Shoes,Books,185.68,124.93,184,97
+450,Luxury Camera,Beauty,384.97,119.64,214,66
+451,Smart Chair,Beauty,399.85,252.91,511,27
+452,Ergonomic Watch,Beauty,318.5,126.38,433,58
+453,Digital Shoes,Sports,41.61,28.97,547,74
+454,Wooden Bag,Electronics,462.13,299.39,809,56
+455,Modern Mouse,Electronics,352.31,220.17,111,41
+456,Ergonomic Shoes,Electronics,330.51,146.09,576,92
+457,Steel Chair,Electronics,340.35,156.51,10,22
+458,Classic Bag,Books,133.08,67.11,704,83
+459,Digital Mouse,Books,114.41,51.44,707,74
+460,Digital T-Shirt,Home & Kitchen,79.62,55.66,425,20
+461,Portable Desk,Home & Kitchen,62.45,42.23,351,68
+462,Steel Camera,Electronics,393.21,199.93,448,99
+463,Wireless Keyboard,Electronics,228.96,74.84,23,53
+464,Portable Keyboard,Clothing,325.75,185.96,528,32
+465,Wooden Camera,Clothing,278.2,120.29,816,61
+466,Ergonomic Chair,Sports,316.73,118.63,29,88
+467,Wooden Chair,Electronics,442.13,212.15,721,37
+468,Smart Shoes,Electronics,106.86,64.22,818,78
+469,Digital T-Shirt,Home & Kitchen,97.55,41.98,686,72
+470,Modern Chair,Books,266.22,147.92,401,85
+471,Digital Shoes,Clothing,61.54,27.13,833,96
+472,Modern Shoes,Electronics,354.46,148.51,688,27
+473,Smart Watch,Home & Kitchen,160.03,63.28,710,28
+474,Portable Shoes,Sports,257.86,120.5,433,33
+475,Ergonomic Watch,Books,245.9,126.63,170,72
+476,Digital Shoes,Electronics,147.97,55.46,886,55
+477,Cotton Chair,Books,476.16,235.15,517,93
+478,Wooden Keyboard,Toys,250.01,143.48,454,72
+479,Cotton Bottle,Electronics,87.79,46.19,281,38
+480,Digital Shoes,Beauty,271.12,99.58,791,73
+481,Smart Bottle,Toys,277.11,95.68,556,56
+482,Luxury Camera,Books,273.31,164.73,223,64
+483,Cotton Bottle,Toys,55.7,35.2,33,67
+484,Smart Camera,Toys,135.09,87.12,120,40
+485,Luxury Desk,Toys,108.89,64.79,727,88
+486,Portable Speaker,Toys,318.22,116.59,211,17
+487,Modern Bag,Clothing,287.19,147.3,331,100
+488,Classic Mouse,Toys,149.85,79.28,97,27
+489,Wireless Bottle,Toys,481.57,295.82,671,26
+490,Portable Keyboard,Home & Kitchen,352.21,124.36,848,41
+491,Digital Watch,Books,381.93,217.89,647,44
+492,Smart Mouse,Toys,315.77,142.12,901,21
+493,Luxury Desk,Sports,204.41,122.63,973,72
+494,Luxury T-Shirt,Beauty,167.01,50.27,995,68
+495,Smart Bag,Sports,319.25,184.82,223,64
+496,Steel Bottle,Home & Kitchen,413.3,205.78,560,83
+497,Steel Mouse,Toys,69.64,44.64,49,15
+498,Digital Headphones,Electronics,54.29,33.31,951,30
+499,Wooden Speaker,Beauty,223.44,67.09,931,26
+500,Leather T-Shirt,Beauty,441.66,185.83,369,42
