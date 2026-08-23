@@ -1,10 +1,11 @@
 venv/
 venv_spark/
-__pycache__/
-.DS_Store
-*.pyc
-.env
 output/
-pipeline_run.log
-*.log
+__pycache__/
 .pytest_cache/
+*.pyc
+*.log
+.DS_Store
+.env
+pdf_text.txt
+DE_C1_Coding_Evaluation.pdf
