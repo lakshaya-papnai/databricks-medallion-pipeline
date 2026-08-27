@@ -6,27 +6,25 @@ def main():
     # ---------------------------------------------------------
     spark = SparkSession.builder \
         .appName("Gold - Revenue by Customer") \
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
-        .master("local[*]") \
+        \
         .getOrCreate()
 
     # ---------------------------------------------------------
     # 2. Define Paths
     # ---------------------------------------------------------
     # Gold reads from final Silver tables ONLY — never from Bronze or raw CSVs
-    silver_orders_path    = "output/delta/silver/silver_orders"
-    silver_customers_path = "output/delta/silver/silver_customers"
-    gold_path             = "output/delta/gold/gold_revenue_by_customer"
+    silver_orders_path    = "workspace.default.silver_orders"
+    silver_customers_path = "workspace.default.silver_customers"
+    gold_path             = "workspace.default.gold_revenue_by_customer"
 
     # ---------------------------------------------------------
     # 3. Load Silver Tables — PASS rows only
     # ---------------------------------------------------------
     # HARD RULE: Only rows that passed all quality checks feed Gold aggregations.
-    orders_df    = spark.read.format("delta").load(silver_orders_path) \
+    orders_df    = spark.table(silver_orders_path) \
                         .filter("quality_check_result = 'PASS'")
 
-    customers_df = spark.read.format("delta").load(silver_customers_path) \
+    customers_df = spark.table(silver_customers_path) \
                         .filter("quality_check_result = 'PASS'")
 
     # ---------------------------------------------------------
@@ -64,12 +62,12 @@ def main():
     # 6. Write to Gold Delta Table
     # ---------------------------------------------------------
     print(f"Writing gold_revenue_by_customer → {gold_path}")
-    gold_df.write.format("delta").mode("overwrite").save(gold_path)
+    gold_df.write.format("delta").mode("overwrite").saveAsTable(gold_path)
 
     # ---------------------------------------------------------
     # 7. Validation and Reporting
     # ---------------------------------------------------------
-    result_df = spark.read.format("delta").load(gold_path)
+    result_df = spark.table(gold_path)
 
     print(f"\nTotal customers with orders: {result_df.count()}")
 

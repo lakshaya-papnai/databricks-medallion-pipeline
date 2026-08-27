@@ -1,119 +1,64 @@
 # Databricks Environment Setup Notes
 
-**Environment:** Databricks Community Edition (free tier)
-**Runtime:** 13.3 LTS (includes Apache Spark 3.4, Delta Lake 2.4)
+**Environment:** Databricks Free Edition
+**Compute:** Serverless
+**Data Governance:** Unity Catalog
 
 ---
 
-## Community Edition Limitations Relevant to This Project
+## Unity Catalog Structure
 
-Understanding what Community Edition *cannot* do is as important as knowing what it can. Several standard Databricks Enterprise features were excluded from this project's design because of these limitations.
+This project bypasses legacy DBFS (`/FileStore/`) paths in favor of modern Unity Catalog governance.
 
-| Feature | Available in CE? | Impact on this project |
-|:---|:---:|:---|
-| Auto Loader (incremental file ingestion) | ❌ No | Used `mode("overwrite")` batch reads instead |
-| Unity Catalog (table governance) | ❌ No | Tables registered per-session in default metastore |
-| Real S3 / ADLS storage | ❌ No | Used DBFS (`/FileStore/`) as the storage layer |
-| Multi-node clusters | ❌ No | Single-node cluster only — no distributed compute |
-| Databricks Jobs (scheduled runs) | ❌ No | Scripts run manually in notebooks |
-| Databricks SQL Warehouses (full) | ⚠️ Limited | Dashboard queries run on the cluster, not a dedicated SQL warehouse |
-| Persistent cluster | ❌ No | Cluster terminates after inactivity; tables must be re-registered |
+### 1. Raw Data Storage (Volumes)
+Raw source files (CSVs) are uploaded to a Unity Catalog Volume. Volumes are the recommended way to manage non-tabular data files in Databricks.
+- **Path:** `/Volumes/workspace/default/raw_data/`
+- **Usage:** Used by the Bronze layer as the source location for `.csv` reads.
 
-None of these limitations affect the correctness of the pipeline logic. The Bronze → Silver → Gold → Dashboard architecture, Delta table writes, quality checks, and aggregations all work identically on Community Edition — the constraints are operational (no scheduling, no enterprise storage) rather than functional.
-
----
-
-## How DBFS Paths Work
-
-DBFS (Databricks File System) is the distributed filesystem available in Community Edition. It maps to the underlying cluster storage and is accessible from any notebook on the same cluster.
-
-### Path conventions used in this project
-
-| Purpose | Path format | Example |
-|:---|:---|:---|
-| Raw CSV source files | `/FileStore/tables/<filename>` | `/FileStore/tables/customers.csv` |
-| Bronze Delta tables | `/FileStore/delta/bronze/<table>` | `/FileStore/delta/bronze/bronze_customers` |
-| Silver Delta tables | `/FileStore/delta/silver/<table>` | `/FileStore/delta/silver/silver_orders` |
-| Gold Delta tables | `/FileStore/delta/gold/<table>` | `/FileStore/delta/gold/gold_sales_by_product` |
-
-**Important:** `/FileStore/` is the only DBFS path that is accessible via the Databricks UI file browser and the `dbutils.fs` commands. Raw Delta table paths (outside `/FileStore/`) exist on the cluster but are not browsable through the UI. Using `/FileStore/delta/` for Delta tables keeps everything in one consistent, accessible location.
-
-### Uploading files to DBFS
-
-1. Go to **Data → Add Data → Upload File** in the Databricks UI
-2. Files uploaded this way land at `/FileStore/tables/<filename>` automatically
-3. Verify with: `dbutils.fs.ls("/FileStore/tables/")`
-
-### Reading from DBFS in PySpark
-
-```python
-# Reading a CSV from DBFS
-df = spark.read.csv("/FileStore/tables/customers.csv", header=True)
-
-# Reading a Delta table from DBFS
-df = spark.read.format("delta").load("/FileStore/delta/bronze/bronze_customers")
-```
+### 2. Managed Delta Tables
+All Delta tables created by the Bronze, Silver, and Gold layers are saved as **Managed Tables** in Unity Catalog.
+- **Schema:** `workspace.default`
+- **Naming convention:** `workspace.default.<layer>_<entity>` (e.g., `workspace.default.bronze_customers`)
+- **Usage:** The pipeline uses `.saveAsTable("workspace.default.table_name")` instead of specifying underlying cloud object storage paths. Unity Catalog abstracts away the physical file storage location.
 
 ---
 
-## How to Register Delta Tables for Databricks SQL
+## Databricks Workflows (Job Orchestration)
 
-Delta tables written by PySpark scripts exist on DBFS as Delta files but are not automatically queryable from Databricks SQL. They must be registered in the metastore first.
+The medallion pipeline is executed automatically using a Databricks Job constructed as a Directed Acyclic Graph (DAG) with three sequential Python tasks.
 
-Run the following in a **Databricks SQL Query Editor** or a notebook with `spark.sql()`:
+### Job Configuration:
+- **Compute Type:** Serverless Compute (eliminates cluster startup time and master/worker configuration conflicts).
+- **Source:** Workspace files (the zipped `src/` directory uploaded to the Databricks Workspace).
 
-```sql
--- Register a Delta table by pointing to its DBFS path
-CREATE TABLE IF NOT EXISTS bronze_customers
-  USING DELTA
-  LOCATION '/FileStore/delta/bronze/bronze_customers';
-```
+### Task Dependencies:
+1. **Bronze Task:**
+   - Script: `src/bronze/ingest_all.py`
+   - Depends On: None
+2. **Silver Task:**
+   - Script: `src/silver/create_silver_tables.py`
+   - Depends On: Bronze Task
+3. **Gold Task:**
+   - Script: `src/gold/create_gold_tables.py`
+   - Depends On: Silver Task
 
-**Note on Community Edition persistence:** The default metastore in Community Edition does not persist table registrations between cluster restarts. If the cluster is restarted, tables must be re-registered. For the dashboard to work after a cluster restart, re-run all `CREATE TABLE` statements from `src/dashboard/DASHBOARD_GUIDE.md` Step 1.
-
-To avoid re-registering tables every session, create a setup notebook that runs all `CREATE TABLE` statements and run it once at the start of each session before opening the dashboard.
-
----
-
-## Runtime Version: 13.3 LTS
-
-**Why 13.3 LTS was chosen:**
-
-- **LTS (Long Term Support)** releases are stable and do not change mid-session. Non-LTS runtimes receive more frequent updates which can introduce unexpected breaking changes.
-- **13.3 LTS** includes Delta Lake 2.4 and Spark 3.4, both of which support all features used in this project: `PERCENT_RANK()`, `WEEKOFYEAR()`, `DATE_TRUNC()`, `concat_ws()`, and Delta `mode("overwrite")` writes.
-- It is the most recent LTS available at the time of development on Community Edition.
-
-To check your runtime version in a notebook:
-```python
-spark.version  # Returns Spark version
-```
+This orchestrator structure ensures that if the Bronze layer fails (e.g., missing CSV), the Silver and Gold layers will not run.
 
 ---
 
-## Community Edition Gotchas
+## Table Registration & Querying
 
-**1. Cluster auto-terminates after 2 hours of inactivity**
-Community Edition clusters shut down automatically. Long-running pipelines should be broken into notebook cells so progress is visible. If the cluster terminates mid-run, the pipeline must be re-started from the beginning of the failed layer.
+Because tables are saved directly into Unity Catalog using `saveAsTable()`, there is no need to manually run `CREATE TABLE ... USING DELTA LOCATION ...` statements to register them for SQL querying.
 
-**2. Table registrations are lost on cluster restart**
-See the metastore note above. Always re-run the `CREATE TABLE ... USING DELTA LOCATION ...` statements after a cluster restart before querying tables via SQL.
+- **PySpark Reads:** `spark.table("workspace.default.silver_orders")`
+- **SQL Reads:** `SELECT * FROM workspace.default.gold_sales_by_product`
 
-**3. No `dbfs:/` prefix needed in Python**
-In PySpark, DBFS paths are referenced as `/FileStore/...` (no prefix). In Databricks CLI or `dbutils.fs` commands, paths use the `dbfs:/FileStore/...` prefix. Mixing these up causes `Path not found` errors.
+The tables are instantly available in the Catalog Explorer and the Databricks SQL query editor the moment the PySpark job finishes.
 
-```python
-# Correct in PySpark
-spark.read.format("delta").load("/FileStore/delta/bronze/bronze_customers")
+---
 
-# Correct in dbutils
-dbutils.fs.ls("dbfs:/FileStore/delta/bronze/")
-```
+## Dashboard Generation (Databricks Genie)
 
-**4. Delta table `overwrite` recreates the schema on each run**
-Using `mode("overwrite")` on a Delta table drops and recreates it. This means if column names or types change between runs, the table is fully replaced — no merge conflict, but also no history retention for schema changes. This is acceptable for a batch pipeline but would need `MERGE INTO` for a production incremental load.
+The final Executive Dashboard was generated using **Databricks Genie** within the Databricks SQL Persona. 
 
-**5. `%run` vs `importlib` for running scripts**
-Databricks notebooks can reference other notebooks with `%run ./path/to/notebook`. However, for Python scripts with number-prefixed names (e.g., `01_ingest_customers.py`), `importlib.import_module()` is required because Python identifiers cannot start with a digit. The orchestrator scripts in this project use `importlib` for this reason.
-
-**6. Databricks SQL requires a separate SQL warehouse or shared cluster**
-On Community Edition, Databricks SQL dashboard queries run on the all-purpose cluster rather than a dedicated SQL warehouse. Ensure the cluster is running before opening the dashboard, otherwise queries will fail with a connection error.
+By providing Genie with a master prompt pointing to the four `workspace.default.gold_*` tables, the AI automatically interpreted the schema, calculated the KPIs, and constructed the Bar, Line, and Donut charts required for the business stakeholders. No manual SQL dashboard configuration was required.

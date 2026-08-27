@@ -1,8 +1,12 @@
 import sys
+import os
+import importlib
 import time
 from datetime import datetime
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, when, lit, concat_ws
+
+sys.path.append(os.getcwd())
 
 # ---------------------------------------------------------
 # Helper Functions
@@ -43,13 +47,13 @@ def combine_quality_flags(spark, source_tables, join_keys, entity_label):
 
     # Load the first table as the base
     base_alias, base_path = source_tables[0]
-    base_df = spark.read.format("delta").load(base_path)
+    base_df = spark.table(base_path)
     # Rename its quality column so it is distinguishable after joins
     base_df = base_df.withColumnRenamed("quality_check_result", f"qc_{base_alias}")
 
     # Iteratively LEFT JOIN each subsequent quality-check table
     for alias, path in source_tables[1:]:
-        right_df = spark.read.format("delta").load(path)
+        right_df = spark.table(path)
         # Select only the join keys and the quality column from the right table
         right_cols = join_keys + ["quality_check_result"]
         right_df = right_df.select(*right_cols) \
@@ -94,13 +98,13 @@ def build_silver_customers(spark):
     Quality checks: completeness, uniqueness, type_validation, business_logic.
     Writes to output/delta/silver/silver_customers.
     """
-    silver_path = "output/delta/silver/silver_customers"
+    silver_path = "workspace.default.silver_customers"
 
     source_tables = [
-        ("completeness",    "output/delta/silver/silver_customers_completeness"),
-        ("uniqueness",      "output/delta/silver/silver_customers_uniqueness"),
-        ("type_validation", "output/delta/silver/silver_customers_type_validation"),
-        ("business_logic",  "output/delta/silver/silver_customers_business_logic"),
+        ("completeness",    "workspace.default.silver_customers_completeness"),
+        ("uniqueness",      "workspace.default.silver_customers_uniqueness"),
+        ("type_validation", "workspace.default.silver_customers_type_validation"),
+        ("business_logic",  "workspace.default.silver_customers_business_logic"),
     ]
 
     # Join on customer_id + ingestion_timestamp to uniquely identify each row
@@ -109,9 +113,9 @@ def build_silver_customers(spark):
     final_df = combine_quality_flags(spark, source_tables, join_keys, "Customers")
 
     print(f"  Writing silver_customers → {silver_path}")
-    final_df.write.format("delta").mode("overwrite").save(silver_path)
+    final_df.write.format("delta").mode("overwrite").saveAsTable(silver_path)
 
-    result_df = spark.read.format("delta").load(silver_path)
+    result_df = spark.table(silver_path)
     total  = result_df.count()
     passed = result_df.filter(col("quality_check_result") == "PASS").count()
     failed = total - passed
@@ -128,14 +132,14 @@ def build_silver_orders(spark):
                     referential_integrity, business_logic.
     Writes to output/delta/silver/silver_orders.
     """
-    silver_path = "output/delta/silver/silver_orders"
+    silver_path = "workspace.default.silver_orders"
 
     source_tables = [
-        ("completeness",          "output/delta/silver/silver_orders_completeness"),
-        ("uniqueness",            "output/delta/silver/silver_orders_uniqueness"),
-        ("type_validation",       "output/delta/silver/silver_orders_type_validation"),
-        ("referential_integrity", "output/delta/silver/silver_orders_referential_integrity"),
-        ("business_logic",        "output/delta/silver/silver_orders_business_logic"),
+        ("completeness",          "workspace.default.silver_orders_completeness"),
+        ("uniqueness",            "workspace.default.silver_orders_uniqueness"),
+        ("type_validation",       "workspace.default.silver_orders_type_validation"),
+        ("referential_integrity", "workspace.default.silver_orders_referential_integrity"),
+        ("business_logic",        "workspace.default.silver_orders_business_logic"),
     ]
 
     # Join on order_id + ingestion_timestamp
@@ -144,9 +148,9 @@ def build_silver_orders(spark):
     final_df = combine_quality_flags(spark, source_tables, join_keys, "Orders")
 
     print(f"  Writing silver_orders → {silver_path}")
-    final_df.write.format("delta").mode("overwrite").save(silver_path)
+    final_df.write.format("delta").mode("overwrite").saveAsTable(silver_path)
 
-    result_df = spark.read.format("delta").load(silver_path)
+    result_df = spark.table(silver_path)
     total  = result_df.count()
     passed = result_df.filter(col("quality_check_result") == "PASS").count()
     failed = total - passed
@@ -161,17 +165,17 @@ def build_silver_products(spark):
     Products only had type_validation — promote it directly as silver_products.
     Writes to output/delta/silver/silver_products.
     """
-    silver_path = "output/delta/silver/silver_products"
-    source_path = "output/delta/silver/silver_products_type_validation"
+    silver_path = "workspace.default.silver_products"
+    source_path = "workspace.default.silver_products_type_validation"
 
     print(f"  Reading silver_products_type_validation → promoting to silver_products")
 
-    final_df = spark.read.format("delta").load(source_path)
+    final_df = spark.table(source_path)
 
     print(f"  Writing silver_products → {silver_path}")
-    final_df.write.format("delta").mode("overwrite").save(silver_path)
+    final_df.write.format("delta").mode("overwrite").saveAsTable(silver_path)
 
-    result_df = spark.read.format("delta").load(silver_path)
+    result_df = spark.table(silver_path)
     total  = result_df.count()
     passed = result_df.filter(col("quality_check_result") == "PASS").count()
     failed = total - passed
@@ -196,9 +200,7 @@ def run_pipeline():
     # ---------------------------------------------------------
     spark = SparkSession.builder \
         .appName("Silver - Create Final Silver Tables") \
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
-        .master("local[*]") \
+        \
         .getOrCreate()
 
     pipeline_start = time.time()
@@ -208,6 +210,25 @@ def run_pipeline():
     print(f"  SILVER TABLE CREATION PIPELINE STARTED")
     print(f"  Start time: {pipeline_start_ts}")
     print("=" * 72)
+
+    # ---------------------------------------------------------
+    # 1.5. Run Individual Quality Checks
+    # ---------------------------------------------------------
+    quality_modules = [
+        "01_quality_completeness",
+        "02_quality_uniqueness",
+        "03_quality_type_validation",
+        "04_quality_referential_integrity",
+        "05_quality_business_logic"
+    ]
+    for module_name in quality_modules:
+        print(f"\n>>> Running quality check: {module_name}.py")
+        try:
+            module = importlib.import_module(module_name)
+            module.main()
+        except Exception as e:
+            print(f"[ERROR] {module_name} failed: {e}")
+            sys.exit(1)
 
     # ---------------------------------------------------------
     # 2. Build Each Final Silver Table with Fail-and-Continue

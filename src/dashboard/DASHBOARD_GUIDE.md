@@ -202,3 +202,37 @@ Place this text tile at the very top of the dashboard.
 | Chart shows as table | Visualization not selected | Click the chart icon in the query results panel |
 | X axis order is wrong | Bucket labels not sorted | Query 2 uses numbered prefixes (`1.`, `2.`...) — ensure `ORDER BY bucket_label ASC` is present |
 | No data in weekly trends | Gold pipeline not run | Run `src/gold/create_gold_tables.py` first |
+
+---
+
+## Alternative Easy Approach: Automated Dashboard via Databricks Genie
+
+While the manual SQL setup documented above is useful for learning, we also successfully utilized **Databricks Genie** as an alternative, zero-code approach to automatically generate the dashboard directly from our Gold tables. 
+
+Because the Gold tables (`workspace.default.gold_*`) were already structured as clean, business-ready aggregations, Genie parsed them instantly and built the visualisations without any manual query writing or UI configuration on our end.
+
+### How to use Genie:
+1. Ensure your tables are available in Unity Catalog (e.g., `workspace.default`).
+2. Open Databricks Genie.
+3. Paste the following master prompt:
+
+> I need to build an Executive Medallion Dashboard using the tables in the workspace.default schema. Please analyze my Gold tables and automatically generate a dashboard with the following 4 specific visualizations:
+>
+> **Total Revenue KPI (Counter/Scorecard):** Sum the total_revenue column from the workspace.default.gold_customer_segmentation table to show our overall business revenue.
+>
+> **Top 5 Products by Revenue (Bar Chart):** Query the workspace.default.gold_sales_by_product table. Put product_name on the X-axis and total_revenue on the Y-axis. Sort it descending by revenue and limit the results to the top 5 products.
+> 
+> **Weekly Revenue Trend (Line Chart):** Query the workspace.default.gold_weekly_trends table. Put week_number on the X-axis and weekly_revenue on the Y-axis to show our performance over time.
+>
+> **Customer Segmentation Breakdown (Pie/Donut Chart):** Query the workspace.default.gold_customer_segmentation table. Group the chart by segment_type and use customer_count as the value/angle to show the percentage split of our customer base.
+> 
+> Please generate these charts and assemble them into a clean dashboard.
+
+### Outcome:
+Genie successfully interpreted the schema and automatically generated the 4 requested charts:
+- The **KPI Counter** accurately aggregated the total revenue.
+- The **Bar Chart** correctly ordered the top 5 products.
+- The **Line Chart** mapped out the 52-week trend seamlessly.
+- The **Pie/Donut Chart** successfully showed the segmentation split (e.g., Repeat customers comprising 78%).
+
+*(Note: See `screenshots/02_sql_dashboard.png` in the repository root for a visual capture of the final Genie-generated dashboard).*

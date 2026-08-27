@@ -1,58 +1,59 @@
 # Requirements Analysis: Databricks Medallion Architecture Data Pipeline
 
 ## 1. Problem Statement
-The e-commerce company receives daily sales data in raw CSV format across three domains: customers, orders, and products. To enable accurate and scalable business intelligence, the company requires an automated data pipeline using a Databricks Medallion architecture (Bronze, Silver, Gold layers). The data contains intentional quality issues (duplicates, nulls, orphans) which must be identified, flagged, and filtered out of final business reporting without actually deleting any records from the underlying tables.
+Basically, we have an e-commerce company getting daily sales data in raw CSVs for customers, orders, and products. To get this ready for dashboards, we need an automated pipeline using a Databricks Medallion architecture (Bronze, Silver, Gold). The raw data is intentionally messy (duplicates, nulls, orphans). The goal is to identify, flag, and filter out all that bad data before it hits the final reporting layer — but without actually deleting any rows from the tables.
 
 ## 2. Functional Requirements
 
 ### Bronze Layer (Raw Ingestion)
-*   **Objective:** Ingest raw CSV files (`customers.csv`, `orders.csv`, `products.csv`) exactly as they are received.
+*   **Goal:** Just get the raw CSV files (`customers.csv`, `orders.csv`, `products.csv`) loaded exactly as they are.
 *   **Actions:**
-    *   Load raw data into Delta tables enforcing explicit schemas (no schema inference).
-    *   No cleaning, filtering, or transformations — raw data only. All NULLs and duplicate rows must be preserved exactly as they are.
-    *   Append metadata columns: `ingestion_timestamp` (current timestamp) and `source_file_name` for lineage.
-    *   Write as Delta tables using `mode("overwrite")` to paths like `/FileStore/delta/bronze/...`.
+    *   Load the data into Delta tables and enforce explicit schemas (don't rely on schema inference).
+    *   No cleaning or filtering at all. Keep all the NULLs and duplicates exactly as they arrived.
+    *   Add a couple of metadata columns so we can track lineage: `ingestion_timestamp` and `source_file_name`.
+    *   Write everything as Delta tables using `mode("overwrite")` to paths like `/FileStore/delta/bronze/...`.
 
 ### Silver Layer (Cleansed and Conformed)
-*   **Objective:** Perform data quality checks and flag bad data, serving as a reliable single source of truth without losing any source rows.
+*   **Goal:** Run the data quality checks and flag the bad rows. This acts as our single source of truth, and we can't lose any source rows here.
 *   **Actions:**
-    *   **Strict Rule:** Read from Bronze Delta tables only, never from raw CSVs.
-    *   **Strict Rule:** Never delete bad rows. Instead, add a `quality_check_result` column. Rows passing all checks get `'PASS'`, failing rows get `'FAIL - <reason>'`.
-    *   If a row fails multiple checks, failure reasons must be concatenated into a single string (e.g., using `concat_ws`).
+    *   **Strict Rule:** Only read from the Bronze Delta tables, never go back to the raw CSVs.
+    *   **Strict Rule:** Never delete bad rows. Instead, just add a `quality_check_result` column. Good rows get `'PASS'`, bad rows get `'FAIL - <reason>'`.
+    *   If a row fails multiple checks, we need to concatenate the reasons into a single string (using something like `concat_ws`).
     *   **Checks required:** 
-        *   Completeness (flagging NULL foreign keys and emails)
-        *   Uniqueness (using `ROW_NUMBER()` to flag duplicates)
-        *   Type validation / Domain integrity (e.g., numeric ranges, cost < price)
-        *   Referential integrity (flagging orphaned foreign keys)
-        *   Business logic (e.g., total_amount calculation checks, date validity)
-    *   Write final Silver tables using `mode("overwrite")`.
+        *   Completeness (flag NULL foreign keys and emails)
+        *   Uniqueness (use `ROW_NUMBER()` to flag duplicates)
+        *   Type validation (check numeric ranges, like making sure cost < price)
+        *   Referential integrity (flag orphaned foreign keys)
+        *   Business logic (check total_amount math, validate dates)
+    *   Write out the final Silver tables using `mode("overwrite")`.
 
 ### Gold Layer (Business Aggregates)
-*   **Objective:** Transform quality-checked data into presentation-ready datasets optimized for downstream dashboards.
+*   **Goal:** Turn the quality-checked data into clean, aggregated tables for the dashboards.
 *   **Actions:**
-    *   **Strict Rule:** Read from final Silver Delta tables only, and ONLY include rows where `quality_check_result = 'PASS'`.
-    *   Write pure SQL aggregations via `spark.sql()` using temporary views.
-    *   Round all monetary values to 2 decimal places.
-    *   Produce specific reporting tables: Sales by Product, Revenue by Customer, Daily/Weekly Trends, and Customer Segmentation.
-    *   Write as Delta tables using `mode("overwrite")`.
+    *   **Strict Rule:** Only read from Silver Delta tables, and strictly filter for `quality_check_result = 'PASS'`.
+    *   Do the aggregations in pure SQL using `spark.sql()` and temporary views.
+    *   Make sure to round all monetary values to 2 decimal places.
+    *   Create specific reporting tables: Sales by Product, Revenue by Customer, Daily/Weekly Trends, and Customer Segmentation.
+    *   Write them out as Delta tables using `mode("overwrite")`.
 
-## 3. Dashboard and Reporting Requirements
-*   **Objective:** Provide a Databricks SQL Dashboard answering key business questions.
-*   **Dashboards must cover:**
-    1.  **Top 10 Products by Revenue:** Bar chart comparing product revenue across categories.
-    2.  **Customer Revenue Distribution:** Histogram/Bar chart grouping customers into defined spend buckets.
-    3.  **Customer Segmentation Breakdown:** Pie/Donut chart showing proportion of High-Value, Repeat, One-Time, and Inactive customers.
-    4.  **Weekly Revenue Trend:** Line chart showing week-over-week revenue and YTD cumulative growth.
-    5.  **Monthly Revenue by Customer Segment:** Stacked bar chart showing monthly trends per segment.
+## 3. Dashboard Requirements
+*   **Goal:** Build a Databricks SQL Dashboard that actually answers business questions.
+*   **Dashboards must include:**
+    1.  **Top 10 Products by Revenue:** A bar chart comparing revenue across product categories.
+    2.  **Customer Revenue Distribution:** A histogram or bar chart grouping customers into spend buckets.
+    3.  **Customer Segmentation Breakdown:** A pie/donut chart showing the split between High-Value, Repeat, One-Time, and Inactive customers.
+    4.  **Weekly Revenue Trend:** A line chart for week-over-week revenue and YTD growth.
+    5.  **Monthly Revenue by Customer Segment:** A stacked bar chart showing the monthly trend per segment.
 
-## 4. Technical and Architectural Rules
-*   **Environment:** Databricks Community Edition using PySpark, Delta Lake, and Databricks SQL.
-*   **Storage:** DBFS for storage (`/FileStore/tables/` for CSVs, `/FileStore/delta/` for Delta tables).
-*   **Orchestration:** Each layer (Bronze, Silver, Gold) must have an orchestrator script (`ingest_all.py`, `create_silver_tables.py`, `create_gold_tables.py`) that runs its respective scripts in the correct dependency order.
-*   **Error Handling:** Orchestrators must use a "fail-and-continue" pattern (try/except) so a single script failure doesn't block the rest of the layer, but must exit with a non-zero code (`sys.exit(1)`) on partial failure to signal downstream job monitors.
-*   **Code Quality:** All code must be well-commented, modular (e.g., using `importlib` for sequential script execution), and structured in a production-ready format.
+## 4. Architectural Rules
+*   **Environment:** We're using Databricks Free Edition with PySpark, Delta Lake, and Databricks SQL.
+*   **Storage:** DBFS (`/FileStore/tables/` for CSVs, `/FileStore/delta/` for Delta tables).
+*   **Orchestration:** Each layer needs an orchestrator script (`ingest_all.py`, `create_silver_tables.py`, `create_gold_tables.py`) to run the individual scripts in the right order.
+*   **Error Handling:** The orchestrators need a "fail-and-continue" setup with try/except blocks. If one script fails, it shouldn't block the rest of the layer. But it still needs to throw a `sys.exit(1)` at the end if there was a partial failure, so job monitors can catch it.
+*   **Code Quality:** Keep the code commented and modular (like using `importlib` for running scripts in sequence). Basically, make it look production-ready.
 
-## 5. Known Data Quality Issues to Handle (Planted)
+## 5. Planted Data Quality Issues
+These are the exact issues I planted to test the pipeline:
 *   **Customers:** 50 NULL emails, 10 duplicate `customer_ids`.
 *   **Orders:** 100 NULL `customer_ids`, 200 NULL `product_ids`, 50 orphan `customer_ids`, 30 orphan `product_ids`, 20 duplicate `order_ids`.
 *   **Products:** 500 clean rows (no intentional issues).
@@ -60,12 +61,12 @@ The e-commerce company receives daily sales data in raw CSV format across three 
 ## 6. Acceptance Criteria
 
 *   **Bronze Layer:** 
-    *   Record counts and NULL/duplicate profiles in Bronze Delta tables exactly match the raw CSV data.
-    *   `ingestion_timestamp` and `source_file_name` are accurately populated.
+    *   Record counts and NULL/duplicate profiles in the Bronze Delta tables have to match the raw CSV data exactly.
+    *   `ingestion_timestamp` and `source_file_name` are populated correctly.
 *   **Silver Layer:**
-    *   Final Silver tables contain the exact same number of rows as Bronze (no data deleted).
-    *   `quality_check_result` accurately flags all planted data quality issues with the correct string format.
+    *   Final Silver tables must have the exact same number of rows as Bronze (again, no data deleted).
+    *   The `quality_check_result` column needs to accurately catch all the planted issues with the right string format.
 *   **Gold Layer:**
-    *   Aggregations only include `PASS` rows.
-    *   Monetary values are rounded correctly to 2 decimal places.
-    *   Table schemas match the exact requirements of the downstream Databricks SQL dashboard queries.
+    *   Aggregations strictly use `PASS` rows.
+    *   Monetary values are rounded to 2 decimal places.
+    *   The table schemas match exactly what the dashboard SQL queries expect.

@@ -31,4 +31,4 @@ Integration tests are designed to run within the Databricks environment:
 ## What is Not Tested and Why
 
 * **Unit Tests for Individual PySpark Transformations:** We do not test individual PySpark transformations in isolation. Refactoring the monolithic processing scripts into modular, testable functions was out of scope for this assessment timeline.
-* **Performance Tests:** There are no benchmarking or performance tests. Given that the project runs on a single-node Community Edition cluster with a relatively small data scale, performance metrics would be meaningless.
+* **Performance Tests:** There are no benchmarking or performance tests. Given that the project runs on a single-node Free Edition cluster with a relatively small data scale, performance metrics would be meaningless.

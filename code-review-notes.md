@@ -14,7 +14,7 @@ Before saving and running any AI-generated code, I performed a manual review of 
 
 - **Explicit schema enforcement on read:** Verified that all column types defined during read operations exactly match the schema in `data-model.md`.
 - **Metadata columns:** Ensured that `ingestion_timestamp` and `source_file_name` were present on all 3 tables.
-- **No transformations applied:** Confirmed that raw data was preserved exactly as-is, including all NULLs and duplicates.
+- **No transformations applied:** Confirmed. that raw data was preserved exactly as-is, including all NULLs and duplicates.
 - **Validation:** Checked that 50 NULL emails and 10 duplicate `customer_ids` were preserved in the output.
 
 ## Silver Layer Review Observations

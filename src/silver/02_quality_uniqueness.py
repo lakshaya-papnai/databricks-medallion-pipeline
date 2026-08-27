@@ -32,7 +32,7 @@ def check_customers_uniqueness(spark, bronze_path, silver_path):
     print(f"  Target : {silver_path}")
 
     # Read from Bronze Delta — NEVER from raw CSV
-    df = spark.read.format("delta").load(bronze_path)
+    df = spark.table(bronze_path)
 
     # Define a window partitioned by customer_id, ordered by ingestion_timestamp.
     # ROW_NUMBER() = 1 means first occurrence → PASS
@@ -49,10 +49,10 @@ def check_customers_uniqueness(spark, bronze_path, silver_path):
         .drop("_row_num")   # Drop the helper column before writing
 
     # Write to Silver Delta
-    flagged_df.write.format("delta").mode("overwrite").save(silver_path)
+    flagged_df.write.format("delta").mode("overwrite").saveAsTable(silver_path)
 
     # Read back and report
-    result_df = spark.read.format("delta").load(silver_path)
+    result_df = spark.table(silver_path)
     print_quality_report(result_df, "Uniqueness - Customer ID")
 
     dup_count = result_df.filter(col("quality_check_result") != "PASS").count()
@@ -71,7 +71,7 @@ def check_orders_uniqueness(spark, bronze_path, silver_path):
     print(f"  Target : {silver_path}")
 
     # Read from Bronze Delta — NEVER from raw CSV
-    df = spark.read.format("delta").load(bronze_path)
+    df = spark.table(bronze_path)
 
     # Define window partitioned by order_id, ordered by ingestion_timestamp.
     # Same logic as customers: row 1 = original, row 2+ = duplicate.
@@ -87,10 +87,10 @@ def check_orders_uniqueness(spark, bronze_path, silver_path):
         .drop("_row_num")   # Drop the helper column before writing
 
     # Write to Silver Delta
-    flagged_df.write.format("delta").mode("overwrite").save(silver_path)
+    flagged_df.write.format("delta").mode("overwrite").saveAsTable(silver_path)
 
     # Read back and report
-    result_df = spark.read.format("delta").load(silver_path)
+    result_df = spark.table(silver_path)
     print_quality_report(result_df, "Uniqueness - Order ID")
 
     dup_count = result_df.filter(col("quality_check_result") != "PASS").count()
@@ -101,16 +101,16 @@ def main():
     # ---------------------------------------------------------
     # 1. Initialize Spark Session
     # ---------------------------------------------------------
-    spark = SparkSession.builder.appName("Silver - Uniqueness Checks").config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension").config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog").master("local[*]").getOrCreate()
+    spark = SparkSession.builder.appName("Silver - Uniqueness Checks").getOrCreate()
 
     # ---------------------------------------------------------
     # 2. Define Paths
     # ---------------------------------------------------------
-    bronze_customers_path = "output/delta/bronze/bronze_customers"
-    bronze_orders_path    = "output/delta/bronze/bronze_orders"
+    bronze_customers_path = "workspace.default.bronze_customers"
+    bronze_orders_path    = "workspace.default.bronze_orders"
 
-    silver_customers_path = "output/delta/silver/silver_customers_uniqueness"
-    silver_orders_path    = "output/delta/silver/silver_orders_uniqueness"
+    silver_customers_path = "workspace.default.silver_customers_uniqueness"
+    silver_orders_path    = "workspace.default.silver_orders_uniqueness"
 
     # ---------------------------------------------------------
     # 3. Run Uniqueness Checks

@@ -1,44 +1,43 @@
 # AI Tool Workflow
 
 ## 1. Primary AI Tool
-For this assessment, I utilized Cursor as my primary AI coding assistant, specifically using the Claude Sonnet 4.6 model. Cursor is exceptionally well-suited for a data engineering workflow because it provides deep contextual awareness of the local workspace. Its ability to maintain multi-turn context and generate high-quality PySpark and SQL code makes it an ideal pair-programming partner for implementing a Databricks Medallion architecture.
+For this project, I used Cursor as my main AI assistant, specifically running Claude Sonnet 4.6. I chose Cursor because it actually understands the local workspace pretty well. Being able to keep the context across multiple chats and have it generate decent PySpark and SQL made it a solid pair-programming tool for building out the Medallion architecture.
 
-## 2. Providing Project Context via `.cursorrules`
-The cornerstone of my AI workflow was a `.cursorrules` file placed in the project root. Cursor automatically loads this at the start of every session, giving the AI full project context without me needing to paste anything manually. This file contained:
-*   The full data schemas and intentional quality issues (e.g., 50 NULL emails, 20 duplicate order IDs).
-*   Hard architectural rules (e.g., Bronze must never clean data, Silver must never delete rows, Gold must use PASS rows only).
-*   DBFS path structures and exact file generation limits (one file per prompt).
+## 2. Setting up Project Context (`.cursorrules`)
+The main thing I kept coming back to was setting up a `.cursorrules` file in the project root. Since Cursor loads this automatically, it gave the AI the full project context without me having to copy-paste the same stuff over and over. 
 
-This guaranteed the AI knew exactly what had been built, what was pending, and the architectural rules it must follow — automatically, from the very first prompt in every session.
+I put a few key things in there: the full data schemas, the specific quality issues I planted (like the 50 NULL emails), and some hard architectural rules. For example, I was strict about Bronze never cleaning data, and Silver never deleting rows. I also threw in the DBFS paths and told it to only generate one file per prompt.
 
-## 3. Iterative Code Generation Strategy
-My strategy for code generation was highly controlled and iterative:
-*   **One file at a time:** I never asked the AI to generate multiple files or an entire folder structure in a single prompt. This limits hallucination and keeps the code focused and reviewable.
-*   **Highly specific prompts:** Prompts always included the exact file name, its specific purpose, the schemas involved, and the expected output format. I referenced the active `.cursorrules` instead of repasting context.
-*   **Rejecting and Refining:** I actively pushed back on AI suggestions that violated architectural principles. For example, in the Silver layer, the AI initially attempted to use `dropDuplicates()` for uniqueness checks and `INNER JOIN`s in the orchestrator. I rejected both, instructing it to use `ROW_NUMBER()` to flag duplicates and `LEFT JOIN`s to preserve all rows, strictly adhering to the "never delete bad rows" rule.
+And that pretty much made sure the AI knew what was going on from the very first prompt.
 
-## 4. Validating AI-Generated Code
-Before accepting any generated code into the codebase, I performed a strict review against my own criteria:
-*   **Rule compliance:** Did it follow the hard rules from `.cursorrules`? (e.g., using `mode("overwrite")` instead of `dbutils.fs.rm`, and avoiding `FAILFAST` options on Bronze reads).
-*   **Layer boundaries:** Did it read and write from the correct layers? (e.g., Gold reading from Silver Delta, not Bronze or raw CSV).
-*   **Technical accuracy:** I caught and corrected subtle logical errors, such as the AI using `NTILE(5)` instead of `PERCENT_RANK()` for revenue segmentation in the Gold layer, or merging weekly data across multiple years by sorting on `week_number` without `order_year`.
+## 3. Code Generation Approach
+I tried to keep the code generation pretty controlled. I never asked the AI to dump out multiple files or a whole folder structure at once. Doing it one file at a time just kept things focused and made it way easier to review.
+
+My prompts were usually pretty specific. I'd include the exact file name, what it needed to do, and the expected output, mostly just referencing the `.cursorrules` file so I didn't have to repeat the schemas. 
+
+But I also had to push back on bad suggestions a lot. For example, in the Silver layer, the AI tried to use `dropDuplicates()` for the uniqueness checks and `INNER JOIN`s in the orchestrator. I rejected both since they violate the "never delete bad rows" rule, and told it to use `ROW_NUMBER()` and `LEFT JOIN`s instead.
+
+## 4. Checking the AI's Code
+Before actually saving and running the code, I made sure to check a few things. First, did it actually follow the rules I set? Like making sure it used `mode("overwrite")` instead of trying to delete files, and making sure it wasn't reading raw CSVs in the Gold layer.
+
+I also caught a few logical errors. Like when the AI tried to use `NTILE(5)` instead of `PERCENT_RANK()` for the customer segmentation, or when it tried to sort weekly data just by `week_number` without considering the year. You really have to read the code.
 
 ## 5. Testing and Validation
-Because I intentionally planted specific data quality issues, I treated these planted issues as my test oracle. After each layer ran, I required the AI to generate validation sections within the scripts to read back from the newly written Delta tables and print summary metrics. For instance, in the Silver layer, I verified that exactly 50 orphan customer IDs were flagged, ensuring the `LEFT JOIN` and `isNotNull()` logic was functioning correctly.
+Since I planted specific data issues, I just used those as my test cases. After a layer ran, I had the scripts read back from the Delta tables and print out summary metrics. Like in the Silver layer, I checked that exactly 50 orphan customer IDs were flagged. That proved the `LEFT JOIN` and `isNotNull()` logic was actually working.
 
-## 6. Debugging and Troubleshooting
-When a piece of code didn't behave as expected, my workflow was to analyze the Spark execution logic rather than just pasting error messages. For example:
-*   When calculating total amounts in the business logic check, floating-point arithmetic caused false positives. I recognized this and instructed the AI to add `spark_round()` before comparison.
-*   When joining tables with identical column names in the Silver orchestrator, the AI created ambiguous column references. I instructed it to use `.select()` to scope the right-side columns prior to the join.
+## 6. Debugging
+When things broke, I tried to actually look at the Spark logic instead of just blindly pasting stack traces back into the chat. 
 
-I ensured I fully understood the underlying logic of every fix before applying it, never blindly copy-pasting suggestions.
+For instance, when checking the total amounts, floating-point math caused a bunch of false positives. I just told the AI to throw a `spark_round()` in there before comparing. Another time, the AI created ambiguous column references by joining tables with identical column names. I had to tell it to use `.select()` to alias the columns properly before the join. 
 
-## 7. Data Privacy and Security
-I am extremely careful about what I share with the AI. I share no real customer PII, no production credentials, and no real database connection strings. All data used in this project was synthetically generated or mocked up. This was a deliberate choice specifically to avoid leaking any sensitive information to external LLM providers.
+Basically, I needed to make sure I understood the fix before applying it.
+
+## 7. Data Privacy
+I'm pretty strict about not sharing real stuff with AI. I didn't paste any real customer PII, credentials, or actual connection strings. Everything in this project is synthetically generated or mocked up. That was an intentional choice so I don't accidentally leak sensitive data to an LLM.
 
 ## 8. Lessons Learned
-Overall, using Claude Sonnet 4.6 via Cursor drastically accelerated the coding process, especially for establishing structural templates (like the 7-section layout used across the Bronze scripts) and generating boilerplate PySpark syntax. 
+Overall, using Claude through Cursor definitely sped things up, especially for writing boilerplate PySpark and setting up the basic structure of the scripts.
 
-However, the workflow highlighted that AI is an assistant, not an architect. The AI frequently defaulted to "easy" solutions that violate robust data engineering patterns—such as filtering out NULL rows instead of flagging them, using `INNER JOIN` where `LEFT JOIN` was required to prevent data loss, or attempting to cast data types in Silver that were already enforced at the Bronze boundary. 
+But the whole process really highlighted that AI is just an assistant, not an architect. It kept defaulting to "easy" solutions that break good data engineering patterns, like trying to just filter out NULL rows instead of flagging them, or using an `INNER JOIN` when a `LEFT JOIN` was needed to prevent data loss.
 
-This reinforced that while AI can write the syntax, the engineer must own the architecture, enforce the design principles, and meticulously review every line of code generated. The use of a strict `.cursorrules` file and an iterative, push-back prompt style was essential to maintaining the integrity of the Medallion architecture.
+It basically reinforced that while AI can write the syntax fine, you still have to own the architecture and review the code. Having that strict `.cursorrules` file and being willing to push back on bad suggestions was the only way to keep the Medallion architecture intact.

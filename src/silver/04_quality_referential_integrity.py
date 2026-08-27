@@ -44,9 +44,9 @@ def check_referential_integrity(spark, orders_path, customers_path, products_pat
     print(f"  Target           : {silver_path}")
 
     # Read all three Bronze Delta tables
-    orders_df    = spark.read.format("delta").load(orders_path)
-    customers_df = spark.read.format("delta").load(customers_path)
-    products_df  = spark.read.format("delta").load(products_path)
+    orders_df    = spark.table(orders_path)
+    customers_df = spark.table(customers_path)
+    products_df  = spark.table(products_path)
 
     # Keep only the PK columns from parent tables for the join.
     # Using distinct() ensures we are comparing against unique IDs only.
@@ -103,10 +103,10 @@ def check_referential_integrity(spark, orders_path, customers_path, products_pat
     flagged_df = flagged_df.drop("cust_valid_id", "prod_valid_id")
 
     # Write to Silver Delta
-    flagged_df.write.format("delta").mode("overwrite").save(silver_path)
+    flagged_df.write.format("delta").mode("overwrite").saveAsTable(silver_path)
 
     # Read back and report
-    result_df = spark.read.format("delta").load(silver_path)
+    result_df = spark.table(silver_path)
     print_quality_report(result_df, "Referential Integrity - Orders")
 
     # Granular expected-vs-actual counts
@@ -127,19 +127,17 @@ def main():
     # ---------------------------------------------------------
     spark = SparkSession.builder \
         .appName("Silver - Referential Integrity Checks") \
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
-        .master("local[*]") \
+        \
         .getOrCreate()
 
     # ---------------------------------------------------------
     # 2. Define Paths
     # ---------------------------------------------------------
-    bronze_orders_path    = "output/delta/bronze/bronze_orders"
-    bronze_customers_path = "output/delta/bronze/bronze_customers"
-    bronze_products_path  = "output/delta/bronze/bronze_products"
+    bronze_orders_path    = "workspace.default.bronze_orders"
+    bronze_customers_path = "workspace.default.bronze_customers"
+    bronze_products_path  = "workspace.default.bronze_products"
 
-    silver_orders_path    = "output/delta/silver/silver_orders_referential_integrity"
+    silver_orders_path    = "workspace.default.silver_orders_referential_integrity"
 
     # ---------------------------------------------------------
     # 3. Run Referential Integrity Check

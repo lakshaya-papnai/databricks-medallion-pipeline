@@ -9,15 +9,15 @@ def main():
     # Databricks provides a 'spark' session by default.
     # Included here so the script is self-contained and can run
     # both in a Databricks notebook and as a standalone script.
-    spark = SparkSession.builder.appName("Ingest Bronze Products").config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension").config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog").master("local[*]").getOrCreate()
+    spark = SparkSession.builder.appName("Ingest Bronze Products").getOrCreate()
 
     # ---------------------------------------------------------
     # 2. Define Paths
     # ---------------------------------------------------------
     # DBFS path where the raw CSV is located
-    source_path = "data/products.csv"
+    source_path = "/Volumes/workspace/default/raw_data/products.csv"
     # DBFS path where the Bronze Delta table will be saved
-    bronze_path = "output/delta/bronze/bronze_products"
+    bronze_path = "workspace.default.bronze_products"
 
     # ---------------------------------------------------------
     # 3. Define Explicit Schema
@@ -67,7 +67,7 @@ def main():
     bronze_df.write \
         .format("delta") \
         .mode("overwrite") \
-        .save(bronze_path)
+        .saveAsTable(bronze_path)
 
     # ---------------------------------------------------------
     # 7. Validation and Summary Reporting
@@ -75,7 +75,7 @@ def main():
     print("Validating Bronze table...\n")
 
     # Read back from Delta to confirm the write was successful
-    validate_df = spark.read.format("delta").load(bronze_path)
+    validate_df = spark.table(bronze_path)
 
     # --- Core Validation Metrics ---
     total_rows = validate_df.count()

@@ -2,7 +2,7 @@
 
 ## 1. Project Overview
 
-This project implements a full **Bronze → Silver → Gold → Dashboard** medallion architecture data pipeline on **Databricks Community Edition** for an e-commerce company ingesting daily sales data from three CSV sources (customers, orders, products). The pipeline ingests raw data into Delta tables, applies four layers of data quality checks in the Silver layer, produces six business-ready Gold aggregation tables, and surfaces insights through a Databricks SQL dashboard. The entire pipeline was built with AI-assisted development using Cursor, with full prompt history and design documentation included in the repository.
+This project implements a full **Bronze → Silver → Gold → Dashboard** medallion architecture data pipeline developed locally and deployed to **Databricks Free Edition (Serverless + Unity Catalog)** for an e-commerce company ingesting daily sales data from three CSV sources (customers, orders, products). The pipeline ingests raw data into Delta tables, applies four layers of data quality checks in the Silver layer, produces six business-ready Gold aggregation tables, and surfaces insights through a Databricks SQL dashboard. The entire pipeline was built with AI-assisted development using Cursor, with full prompt history and design documentation included in the repository.
 
 ---
 
@@ -128,14 +128,26 @@ C1 Assessment/
 
 | Requirement | Details |
 |:---|:---|
-| Databricks Community Edition | Free account at [community.cloud.databricks.com](https://community.cloud.databricks.com) |
+| Databricks Free Edition | Databricks account with Serverless compute and Unity Catalog enabled |
+| Local PySpark (Optional) | For local testing before cloud deployment |
 | Python 3.8+ | For running the local data generation script |
 | Python libraries | `faker`, `pandas`, `numpy` (installed via pip) |
 | Git | For cloning the repository |
 
 ---
 
+## Execution Environments
+
+This project was developed in two distinct phases:
+1. **Phase 1 (Local Development):** The pipeline was built and validated locally using PySpark with Delta Lake. Scripts used local paths, `.master("local[*]")`, and open-source Delta extensions. This phase proved the pipeline logic was 100% correct across 9 local tests.
+2. **Phase 2 (Databricks Serverless Deployment):** The codebase was migrated to Databricks Free Edition using Serverless Workflows and Unity Catalog. Hardcoded paths were replaced with Unity Catalog Volumes (`/Volumes/workspace/default/raw_data/`), tables were converted to managed tables (`workspace.default.<table_name>`), and local Spark configurations were stripped out to run natively on Serverless compute.
+
+---
+
 ## 5. Setup Instructions
+
+### Track A: Local Execution
+For running the pipeline on your local machine.
 
 ### Step 1 — Clone the Repository
 
@@ -165,7 +177,7 @@ products.csv  — 500 rows | 0 issues
 
 ### Step 3 — Upload CSVs to DBFS
 
-1. Log in to **Databricks Community Edition**
+1. Log in to **Databricks Free Edition**
 2. Navigate to **Data → Add Data → Upload File**
 3. Upload `data/customers.csv`, `data/orders.csv`, `data/products.csv`
 4. Confirm each file lands at `/FileStore/tables/`:
@@ -177,7 +189,7 @@ products.csv  — 500 rows | 0 issues
 
 1. Go to **Compute → Create Cluster**
 2. Set **Databricks Runtime**: `13.3 LTS` or above (includes Delta Lake)
-3. Use the default **Single Node** configuration (Community Edition)
+3. Use the default **Single Node** configuration (Free Edition)
 4. Click **Create Cluster** and wait for it to start
 
 ### Step 5 — Run the Bronze Layer
@@ -255,6 +267,18 @@ CREATE TABLE silver_orders
    - Query 4 → Line chart (Weekly revenue trend)
 5. See `src/dashboard/DASHBOARD_GUIDE.md` for detailed step-by-step instructions with screenshots guidance.
 
+### Track B: Databricks Serverless Deployment (Free Edition)
+For running the fully migrated pipeline on Databricks Free Edition.
+
+1. **Upload Raw Data:** Generate the CSVs locally and upload them to a Unity Catalog Volume at `/Volumes/workspace/default/raw_data/`.
+2. **Upload Code:** Zip the `src/` directory and import it into your Databricks Workspace folder.
+3. **Configure Workflow Job:** Create a Databricks Job with three sequential tasks:
+   - **Task 1 (Bronze):** Path: `src/bronze/ingest_all.py` | Compute: Serverless
+   - **Task 2 (Silver):** Path: `src/silver/create_silver_tables.py` | Depends On: Bronze | Compute: Serverless
+   - **Task 3 (Gold):** Path: `src/gold/create_gold_tables.py` | Depends On: Silver | Compute: Serverless
+4. **Execute:** Run the Job. All 22 tables will automatically populate in the `workspace.default` catalog.
+5. **Generate Dashboard:** Go to Databricks Dashboards and use **Genie** to automatically generate the 4 required charts by passing a master prompt referencing the `workspace.default.gold_*` tables.
+
 ---
 
 ## 6. Data Quality Summary
@@ -295,20 +319,18 @@ In production this would be fixed using a single-pass flagging approach
 rather than joining separate check outputs.
 
 **Dashboard SQL queries:**
-Dashboard tiles are documented in src/dashboard/dashboard_queries.sql
-and src/dashboard/DASHBOARD_GUIDE.md but require a live Databricks SQL
-environment to render visually. The queries are verified correct against
-the Gold table schemas.
+Dashboard tiles are documented in src/dashboard/dashboard_queries.sql. The final AI-generated dashboard was built on Databricks Free Edition using Genie.
+
+**Project Screenshots:**
+Screenshots demonstrating the working pipeline, the final Genie-generated dashboard, and the Unity Catalog table structure are available in the `screenshots/` directory at the root of the repository:
+- `screenshots/01_databricks_job_run.png` - Successful execution of the Databricks Workflow Job
+- `screenshots/02_sql_dashboard.png` - The final AI-generated executive dashboard
+- `screenshots/03_catalog_tables.png` - The resulting Delta tables in Unity Catalog
 
 **Gold file extensions:**
 Gold scripts use .py extension instead of .sql as shown in the brief
 template. This is intentional — .sql files cannot write Delta tables.
 PySpark is required for Delta Lake writes.
-
-**Local vs Databricks paths:**
-Source files use local relative paths (data/, output/delta/) for local
-testing. Original DBFS paths (/FileStore/) are preserved in
-dashboard_queries.sql and DASHBOARD_GUIDE.md for Databricks deployment.
 
 ---
 

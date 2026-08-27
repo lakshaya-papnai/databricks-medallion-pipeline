@@ -40,4 +40,4 @@ The workflow for every single file followed this loop:
 - **Gold Format Correction:** When generating the Gold layer, Cursor briefly attempted to output `.sql` templates. This was caught immediately during the Review phase and corrected to `.py` (PySpark) before significant code was written.
 
 ## 6. Documenting Rejections
-- Whenever AI generated incorrect logic or hallucinated requirements, the rejection was documented in the `ai-prompts/` directory along with the specific reasons (e.g., correcting Community Edition constraints, fixing the Silver layer compound join key).
+- Whenever AI generated incorrect logic or hallucinated requirements, the rejection was documented in the `ai-prompts/` directory along with the specific reasons (e.g., correcting architectural constraints, fixing the Silver layer compound join key).

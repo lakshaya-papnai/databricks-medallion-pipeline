@@ -36,7 +36,7 @@ def check_orders_business_logic(spark, bronze_path, silver_path):
     print(f"  Source : {bronze_path}")
     print(f"  Target : {silver_path}")
 
-    df = spark.read.format("delta").load(bronze_path)
+    df = spark.table(bronze_path)
 
     # --- Condition 1: total_amount mismatch ---
     # Compute expected amount and compare with actual.
@@ -75,9 +75,9 @@ def check_orders_business_logic(spark, bronze_path, silver_path):
         .otherwise(lit("PASS"))
     )
 
-    flagged_df.write.format("delta").mode("overwrite").save(silver_path)
+    flagged_df.write.format("delta").mode("overwrite").saveAsTable(silver_path)
 
-    result_df = spark.read.format("delta").load(silver_path)
+    result_df = spark.table(silver_path)
     print_quality_report(result_df, "Business Logic - Orders")
 
     failed = result_df.filter(col("quality_check_result") != "PASS").count()
@@ -97,7 +97,7 @@ def check_customers_business_logic(spark, bronze_path, silver_path):
     print(f"  Source : {bronze_path}")
     print(f"  Target : {silver_path}")
 
-    df = spark.read.format("delta").load(bronze_path)
+    df = spark.table(bronze_path)
 
     # Valid segment values based on the agreed domain definition
     valid_segments = ["Premium", "Standard", "Basic"]
@@ -125,9 +125,9 @@ def check_customers_business_logic(spark, bronze_path, silver_path):
         .otherwise(lit("PASS"))
     )
 
-    flagged_df.write.format("delta").mode("overwrite").save(silver_path)
+    flagged_df.write.format("delta").mode("overwrite").saveAsTable(silver_path)
 
-    result_df = spark.read.format("delta").load(silver_path)
+    result_df = spark.table(silver_path)
     print_quality_report(result_df, "Business Logic - Customers")
 
     failed = result_df.filter(col("quality_check_result") != "PASS").count()
@@ -140,19 +140,17 @@ def main():
     # ---------------------------------------------------------
     spark = SparkSession.builder \
         .appName("Silver - Business Logic Checks") \
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
-        .master("local[*]") \
+        \
         .getOrCreate()
 
     # ---------------------------------------------------------
     # 2. Define Paths
     # ---------------------------------------------------------
-    bronze_orders_path    = "output/delta/bronze/bronze_orders"
-    bronze_customers_path = "output/delta/bronze/bronze_customers"
+    bronze_orders_path    = "workspace.default.bronze_orders"
+    bronze_customers_path = "workspace.default.bronze_customers"
 
-    silver_orders_path    = "output/delta/silver/silver_orders_business_logic"
-    silver_customers_path = "output/delta/silver/silver_customers_business_logic"
+    silver_orders_path    = "workspace.default.silver_orders_business_logic"
+    silver_customers_path = "workspace.default.silver_customers_business_logic"
 
     # ---------------------------------------------------------
     # 3. Run Business Logic Checks

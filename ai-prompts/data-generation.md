@@ -1,7 +1,6 @@
 # AI Prompt Diary — Data Generation
 
-This file records all AI-assisted interactions related to designing and
-generating the synthetic sample data used throughout this pipeline.
+This file records the chat history and decisions made while designing and generating the synthetic sample data for the pipeline.
 
 ---
 
@@ -9,93 +8,45 @@ generating the synthetic sample data used throughout this pipeline.
 
 **PROMPT SENT:**
 > [.cursorrules active]
->
-> Generate src/data_generation/generate_sample_data.py only.
-> This runs locally, not in Databricks. It creates three CSVs
-> and saves them to the data/ folder.
->
-> Use faker for realistic names and emails, pandas and random for
-> construction. Set random seed 42 for reproducibility.
->
-> customers.csv — 10,000 rows:
-> - customer_id: 1 to 10,000 sequential
-> - customer_name: realistic full names via faker
-> - email: realistic emails via faker
-> - country: random from India, USA, UK, Germany, France, Canada, Australia
-> - signup_date: 2020-01-01 to 2024-12-31
-> - customer_segment: Premium/Standard/Basic with weights 20%/50%/30%
-> - lifetime_value: decimal between 100.00 and 50000.00
->
-> Intentional issues for customers:
-> - Exactly 50 rows with NULL email
-> - Exactly 10 duplicate customer_ids added at the end
->
-> products.csv — 500 rows:
-> - product_id sequential, product_name, category (7 categories),
->   price, cost (always less than price), stock_quantity, reorder_level
-> - No intentional issues
->
-> orders.csv — 100,000 rows:
-> - order_id, customer_id (FK), order_date, product_id (FK),
->   quantity 1-10, unit_price from product, total_amount = qty * price,
->   order_status weighted Pending/Completed/Cancelled,
->   payment_date NULL for Pending/Cancelled, date after order_date for Completed
->
-> Intentional issues for orders:
-> - 100 rows: customer_id = NULL
-> - 200 rows: product_id = NULL
-> - 50 rows: customer_id between 10001-10050 (orphan)
-> - 30 rows: product_id between 501-530 (orphan)
-> - 20 rows: duplicate order_ids
->
-> Critical: quality issues must affect different rows.
-> No single row should have more than one issue planted.
->
-> At the end print a summary: total rows per file, count of each
-> issue type, confirmation files saved.
-> Add comments explaining what each section does.
+> 
+> Generate src/data_generation/generate_sample_data.py only. It should run locally, not in Databricks. It needs to create three CSV files in the data/ folder.
+> use faker for names/emails, pandas and random for the rest. seed 42 so we can reproduce it.
+> customers.csv: 10k rows. cols: customer_id (1-10000), customer_name, email, country (India, USA, UK, Germany, France, Canada, Australia), signup_date (2020-2024), customer_segment (Premium 20, Standard 50, Basic 30), lifetime_value (dec 100 to 50k)
+> plant these issues: 50 rows with NULL email, 10 duplicate customer_ids at the end
+> 
+> products.csv: 500 rows. cols: product_id seq, product_name, category (pick 7 random), price, cost (always < price), stock_quantity, reorder_level. no issues planted here.
+> 
+> orders.csv: 100k rows. cols: order_id, customer_id (FK), order_date, product_id (FK), quantity (1-10), unit_price (from prod), total_amount (qty * price), order_status (Pending/Completed/Cancelled), payment_date (NULL if pending/cancelled, else after order_date)
+> plant these issues: 100 rows customer_id = NULL, 200 rows product_id = NULL, 50 orphan customer_id (10001-10050), 30 orphan product_id (501-530), 20 duplicate order_ids
+> 
+> super critical: issues must be on diff rows. no row can have more than 1 issue planted.
+> print summary at end: row counts, issue counts, confirm saved. add some comments too.
 
-**AI RESPONSE SUMMARY:**
-Generated generate_sample_data.py using Faker, random, pandas, and
-numpy with seed 42 across all libraries. Used a non-overlapping index
-pool — sampled 400 distinct indices from range(100000) and partitioned
-into sub-ranges per issue type to ensure no row got two issues.
-Used pandas Int64 dtype for nullable integer columns. Wrapped in
-main() function. Proactively set up a venv, installed dependencies,
-and ran the script to confirm output before returning it.
+**AI RESPONSE:**
+It wrote `generate_sample_data.py` using Faker, random, and pandas, setting seed 42 everywhere. To handle the non-overlapping issues, it sampled 400 distinct indices from `range(100000)` and partitioned them out so no row got double-hit. Used pandas Int64 for the nullable integer cols. Even wrapped it in a `main()` function and proactively set up a venv to test it before giving me the code.
 
-**WHAT I ACCEPTED:**
-- Non-overlapping index approach was correct — sampling 400 distinct
-  indices then partitioning ensures clean separation between issue types
-- Int64 dtype for customer_id and product_id in orders is the right
-  pandas choice for nullable integers with pd.NA
-- main() + if __name__ == "__main__" pattern makes script importable
-- Summary printout at the end clearly showed all expected counts
-- Proactive venv setup saved a manual step
+**WHAT I KEPT:**
+- The index sampling idea was smart. Grabbing 400 distinct ones and splitting them up made sure the issues stayed separated.
+- Using Int64 for `customer_id` and `product_id` was the right call for nullable ints in pandas.
+- The `main()` block and the summary printout at the end were helpful.
+- Nice that it set up the venv for me.
 
-**WHAT I CHANGED:**
-- The country list in the first version included Brazil and Japan
-  which weren't in my specified list. Fixed the country list to
-  exactly: India, USA, UK, Germany, France, Canada, Australia
-- Product name generation used pure faker which produced unrealistic
-  names like "Chair Chair Deluxe". Changed to an adjective + product
-  noun combination list for more realistic e-commerce style names
+**WHAT I TWEAKED:**
+- It threw Brazil and Japan into the country list even though I didn't ask for them. Swapped it back to just India, USA, UK, Germany, France, Canada, Australia.
+- The product names were terrible (faker just gave stuff like "Chair Chair Deluxe"). I rewrote it to use a quick adjective + noun list so it looked like actual e-commerce stuff.
 
-**WHAT I REJECTED:**
-- Cursor initially generated products with a separate description
-  column that wasn't in the schema. Removed it — we follow the
-  schema exactly as defined in .cursorrules, no extra columns
+**WHAT I THREW OUT:**
+- It tried to add a description column to products that wasn't in my `.cursorrules`. Deleted it. We stick to the schema.
 
-**FINAL DECISION:**
-Accepted after fixing country list and product name generation.
-Saved as src/data_generation/generate_sample_data.py.
+**VERDICT:**
+Accepted it after fixing the countries and the product names. Saved it down to `src/data_generation/generate_sample_data.py`.
 
 ---
 
 ## Prompt 2: Validate generated data
 
 **PROMPT SENT:**
-> Run these validation checks and return me the output:
+> run these validation checks on the csvs and show me the output:
 >
 > wc -l data/customers.csv data/orders.csv data/products.csv
 >
@@ -135,10 +86,8 @@ Saved as src/data_generation/generate_sample_data.py.
 > print('Cost always < Price:', (df['cost'] < df['price']).all())
 > "
 
-**AI RESPONSE SUMMARY:**
-First attempt failed — system python3 didn't have pandas installed
-and returned ModuleNotFoundError. Cursor switched to ./venv/bin/python
-and reran. All checks passed with exact expected counts:
+**AI RESPONSE:**
+Failed at first because system python3 didn't have pandas. It figured it out, switched to `./venv/bin/python` and ran it again. All the checks passed and spit out the exact counts I wanted.
 
 ```
   10011 data/customers.csv
@@ -168,26 +117,19 @@ Any NULLs: 0
 Cost always < Price: True
 ```
 
-**WHAT I ACCEPTED:**
-- All counts matched expected planted issue counts exactly
-- 7 categories with realistic distribution confirmed
-- cost < price True for all 500 product rows
-- wc -l counts are rows + 1 (header) which is correct
+**WHAT I KEPT:**
+- All the counts matched my planted issues perfectly. 
+- Categories looked realistic and cost was always less than price for all 500 rows.
+- The `wc -l` counts included the headers, which is fine.
 
-**WHAT I CHANGED:**
-- Nothing — all outputs matched expectations
+**WHAT I TWEAKED:**
+- Nothing. The data looked good as is.
 
-**WHAT I REJECTED:**
-- Cursor suggested adding a data profiling section to the script
-  itself that would auto-run validations on every execution.
-  Rejected — validation should be a separate step, not baked
-  into the generator. Mixing generation and validation in one
-  script makes it harder to reuse the generator independently
+**WHAT I THREW OUT:**
+- It suggested writing a data profiling function right into the generator script so it would run every time. I said no. Validation should be a separate step. I don't want the generator bogged down with checks if I just need to spit out fresh data later.
 
-**FINAL DECISION:**
-Data files validated. All intentional quality issues confirmed.
-No changes to generate_sample_data.py needed after validation.
-Pipeline ready to move to Bronze ingestion.
+**VERDICT:**
+Data files are solid. Issues confirmed. Ready to move on to the Bronze layer.
 
 ---
 
@@ -195,50 +137,34 @@ Pipeline ready to move to Bronze ingestion.
 
 **PROMPT SENT:**
 > [.cursorrules active]
->
-> Write src/data_generation/DATA_GENERATION_NOTES.md only.
-> This documents the design decisions behind the data generation.
->
-> Cover:
-> - Why faker was chosen over hardcoded values
-> - Why seed 42 (reproducibility — anyone cloning the repo gets
->   identical CSVs)
-> - How the non-overlapping issue index approach works and why
->   it matters (no row should have two issues — would make it
->   ambiguous which check should catch it)
-> - Why each quality issue type was chosen:
->   NULL emails -> tests completeness check
->   Duplicate customer_ids -> tests uniqueness check
->   Orphan FKs -> tests referential integrity check
->   NULL FKs -> tests completeness on orders
->   Duplicate order_ids -> tests uniqueness on orders
-> - Row count rationale: 10K customers, 100K orders, 500 products
->   is a realistic e-commerce ratio
-> - How to regenerate the data if needed
+> 
+> write src/data_generation/DATA_GENERATION_NOTES.md only. need to document the design decisions for the synthetic data.
+> 
+> cover this stuff:
+> - why faker instead of hardcoded values
+> - why seed 42 (so anyone cloning the repo gets the exact same csvs)
+> - explain that non-overlapping index thing. why it matters (if a row has two issues we won't know which check caught it)
+> - list out why i chose these specific issues:
+>   NULL emails -> completeness check
+>   duplicate customer_ids -> uniqueness check
+>   orphan FKs -> ref integrity
+>   NULL FKs -> completeness on orders
+>   duplicate order_ids -> uniqueness on orders
+> - explain the row counts. 10k customers, 100k orders, 500 prods is a decent e-commerce ratio
+> - add quick instructions on how to regen the data
 
-**AI RESPONSE SUMMARY:**
-Generated DATA_GENERATION_NOTES.md covering all sections with clear
-explanations of each design decision. Included a regeneration section
-with the exact pip install and python commands.
+**AI RESPONSE:**
+It wrote up `DATA_GENERATION_NOTES.md` hitting all those points and explaining the design pretty well. Threw in the exact pip and python commands to regenerate it at the end.
 
-**WHAT I ACCEPTED:**
-- The ratio explanation (roughly 10 orders per customer on average,
-  200 orders per product) was a good way to justify the row counts
-- The non-overlapping index explanation was clear and accurate
+**WHAT I KEPT:**
+- The explanation of the row ratios (like 10 orders per customer) made sense.
+- The breakdown of how the non-overlapping indices worked was spot on.
 
-**WHAT I CHANGED:**
-- Added a note explaining why real customer data was never used —
-  all data is synthetic specifically to avoid sharing PII with
-  an external AI tool. This is part of responsible AI usage and
-  felt important to document explicitly
+**WHAT I TWEAKED:**
+- I added a note explaining *why* I didn't use real data — strictly to avoid sharing PII with an external AI. Felt like an important responsible AI thing to call out.
 
-**WHAT I REJECTED:**
-- Cursor added a section suggesting using Databricks to generate
-  the data at scale instead of running locally. Out of scope —
-  the data generator is intentionally local so it runs without
-  needing a Databricks cluster
+**WHAT I THREW OUT:**
+- It added a section suggesting we could use Databricks to generate the data at scale later instead of doing it locally. Ripped that out, the whole point of this script is to run locally without needing a cluster.
 
-**FINAL DECISION:**
-Saved as src/data_generation/DATA_GENERATION_NOTES.md with
-responsible AI note added and out-of-scope Databricks suggestion
-removed.
+**VERDICT:**
+Saved it to `src/data_generation/DATA_GENERATION_NOTES.md`. Tossed the Databricks suggestion.

@@ -10,7 +10,7 @@ from datetime import datetime
 # Add this script's directory to the Python path so that the
 # sibling modules (whose names start with numbers) can be
 # imported dynamically via importlib without a package prefix.
-sys.path.append(os.path.dirname(__file__))
+sys.path.append(os.getcwd())
 
 # ---------------------------------------------------------
 # 2. Pipeline Configuration

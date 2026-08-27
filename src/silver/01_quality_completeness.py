@@ -29,7 +29,7 @@ def check_customers_completeness(spark, bronze_path, silver_path):
     print(f"  Target : {silver_path}")
 
     # Read from Bronze Delta — NEVER from raw CSV
-    df = spark.read.format("delta").load(bronze_path)
+    df = spark.table(bronze_path)
 
     # Apply completeness check:
     # If email IS NULL → FAIL, otherwise → PASS
@@ -40,10 +40,10 @@ def check_customers_completeness(spark, bronze_path, silver_path):
     )
 
     # Write to Silver Delta — mode overwrite for idempotent daily runs
-    flagged_df.write.format("delta").mode("overwrite").save(silver_path)
+    flagged_df.write.format("delta").mode("overwrite").saveAsTable(silver_path)
 
     # Read back and report
-    result_df = spark.read.format("delta").load(silver_path)
+    result_df = spark.table(silver_path)
     print_quality_report(result_df, "Completeness - Customer Email")
 
     # Validate against expected planted issues
@@ -63,7 +63,7 @@ def check_orders_completeness(spark, bronze_path, silver_path):
     print(f"  Target : {silver_path}")
 
     # Read from Bronze Delta — NEVER from raw CSV
-    df = spark.read.format("delta").load(bronze_path)
+    df = spark.table(bronze_path)
 
     # Build a list of per-column failure flags.
     # Each when() returns the failure reason string or None.
@@ -82,10 +82,10 @@ def check_orders_completeness(spark, bronze_path, silver_path):
     )
 
     # Write to Silver Delta
-    flagged_df.write.format("delta").mode("overwrite").save(silver_path)
+    flagged_df.write.format("delta").mode("overwrite").saveAsTable(silver_path)
 
     # Read back and report
-    result_df = spark.read.format("delta").load(silver_path)
+    result_df = spark.table(silver_path)
 
     # Individual check counts for detailed validation
     null_cust  = result_df.filter(col("customer_id").isNull()).count()
@@ -100,16 +100,16 @@ def main():
     # ---------------------------------------------------------
     # 1. Initialize Spark Session
     # ---------------------------------------------------------
-    spark = SparkSession.builder.appName("Silver - Completeness Checks").config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension").config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog").master("local[*]").getOrCreate()
+    spark = SparkSession.builder.appName("Silver - Completeness Checks").getOrCreate()
 
     # ---------------------------------------------------------
     # 2. Define Paths
     # ---------------------------------------------------------
-    bronze_customers_path = "output/delta/bronze/bronze_customers"
-    bronze_orders_path    = "output/delta/bronze/bronze_orders"
+    bronze_customers_path = "workspace.default.bronze_customers"
+    bronze_orders_path    = "workspace.default.bronze_orders"
 
-    silver_customers_path = "output/delta/silver/silver_customers_completeness"
-    silver_orders_path    = "output/delta/silver/silver_orders_completeness"
+    silver_customers_path = "workspace.default.silver_customers_completeness"
+    silver_orders_path    = "workspace.default.silver_orders_completeness"
 
     # ---------------------------------------------------------
     # 3. Run Completeness Checks

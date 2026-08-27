@@ -6,29 +6,27 @@ def main():
     # ---------------------------------------------------------
     spark = SparkSession.builder \
         .appName("Gold - Customer Segmentation") \
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
-        .master("local[*]") \
+        \
         .getOrCreate()
 
     # ---------------------------------------------------------
     # 2. Define Paths
     # ---------------------------------------------------------
     # Gold reads from final Silver tables ONLY — never from Bronze or raw CSVs
-    silver_orders_path    = "output/delta/silver/silver_orders"
-    silver_customers_path = "output/delta/silver/silver_customers"
+    silver_orders_path    = "workspace.default.silver_orders"
+    silver_customers_path = "workspace.default.silver_customers"
 
-    gold_segmentation_path = "output/delta/gold/gold_customer_segmentation"
-    gold_detail_path       = "output/delta/gold/gold_customer_segment_detail"
+    gold_segmentation_path = "workspace.default.gold_customer_segmentation"
+    gold_detail_path       = "workspace.default.gold_customer_segment_detail"
 
     # ---------------------------------------------------------
     # 3. Load Silver Tables — PASS rows only
     # ---------------------------------------------------------
     # HARD RULE: Only rows that passed all quality checks feed Gold aggregations.
-    orders_df    = spark.read.format("delta").load(silver_orders_path) \
+    orders_df    = spark.table(silver_orders_path) \
                         .filter("quality_check_result = 'PASS'")
 
-    customers_df = spark.read.format("delta").load(silver_customers_path) \
+    customers_df = spark.table(silver_customers_path) \
                         .filter("quality_check_result = 'PASS'")
 
     # ---------------------------------------------------------
@@ -110,10 +108,10 @@ def main():
     # This detail table is useful for dashboard drill-downs and
     # allows downstream queries to filter or explore individual customers.
     print(f"Writing gold_customer_segment_detail → {gold_detail_path}")
-    customer_segmented_df.write.format("delta").mode("overwrite").save(gold_detail_path)
+    customer_segmented_df.write.format("delta").mode("overwrite").saveAsTable(gold_detail_path)
 
     # Re-read from Delta for correctness
-    detail_df = spark.read.format("delta").load(gold_detail_path)
+    detail_df = spark.table(gold_detail_path)
     detail_df.createOrReplaceTempView("customer_segmented")
 
     # ---------------------------------------------------------
@@ -134,13 +132,13 @@ def main():
     # 10. Write Segment Summary Table to Gold
     # ---------------------------------------------------------
     print(f"Writing gold_customer_segmentation → {gold_segmentation_path}")
-    segmentation_summary_df.write.format("delta").mode("overwrite").save(gold_segmentation_path)
+    segmentation_summary_df.write.format("delta").mode("overwrite").saveAsTable(gold_segmentation_path)
 
     # ---------------------------------------------------------
     # 11. Validation and Reporting
     # ---------------------------------------------------------
-    summary_df = spark.read.format("delta").load(gold_segmentation_path)
-    detail_result = spark.read.format("delta").load(gold_detail_path)
+    summary_df = spark.table(gold_segmentation_path)
+    detail_result = spark.table(gold_detail_path)
 
     total_customers = detail_result.count()
     print(f"\nTotal customers segmented: {total_customers}")

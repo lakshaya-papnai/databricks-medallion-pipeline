@@ -6,18 +6,16 @@ def main():
     # ---------------------------------------------------------
     spark = SparkSession.builder \
         .appName("Gold - Daily and Weekly Trends") \
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
-        .master("local[*]") \
+        \
         .getOrCreate()
 
     # ---------------------------------------------------------
     # 2. Define Paths
     # ---------------------------------------------------------
     # Gold reads from final Silver tables ONLY — never from Bronze or raw CSVs
-    silver_orders_path  = "output/delta/silver/silver_orders"
-    gold_daily_path     = "output/delta/gold/gold_daily_trends"
-    gold_weekly_path    = "output/delta/gold/gold_weekly_trends"
+    silver_orders_path  = "workspace.default.silver_orders"
+    gold_daily_path     = "workspace.default.gold_daily_trends"
+    gold_weekly_path    = "workspace.default.gold_weekly_trends"
 
     # ---------------------------------------------------------
     # 3. Load Silver Orders — PASS rows and Completed orders only
@@ -25,7 +23,7 @@ def main():
     # HARD RULE: Only PASS rows feed Gold aggregations.
     # For trend analysis we further restrict to Completed orders only,
     # because only Completed orders represent confirmed, realized revenue.
-    orders_df = spark.read.format("delta").load(silver_orders_path) \
+    orders_df = spark.table(silver_orders_path) \
                     .filter("quality_check_result = 'PASS'") \
                     .filter("order_status = 'Completed'")
 
@@ -72,16 +70,16 @@ def main():
     # 6. Write Both Tables to Gold Delta
     # ---------------------------------------------------------
     print(f"Writing gold_daily_trends  → {gold_daily_path}")
-    daily_df.write.format("delta").mode("overwrite").save(gold_daily_path)
+    daily_df.write.format("delta").mode("overwrite").saveAsTable(gold_daily_path)
 
     print(f"Writing gold_weekly_trends → {gold_weekly_path}")
-    weekly_df.write.format("delta").mode("overwrite").save(gold_weekly_path)
+    weekly_df.write.format("delta").mode("overwrite").saveAsTable(gold_weekly_path)
 
     # ---------------------------------------------------------
     # 7. Validation and Reporting
     # ---------------------------------------------------------
-    daily_result  = spark.read.format("delta").load(gold_daily_path)
-    weekly_result = spark.read.format("delta").load(gold_weekly_path)
+    daily_result  = spark.table(gold_daily_path)
+    weekly_result = spark.table(gold_weekly_path)
 
     # Register for SQL validation queries
     daily_result.createOrReplaceTempView("gold_daily_trends")

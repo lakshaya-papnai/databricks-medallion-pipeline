@@ -10,7 +10,7 @@ from datetime import datetime
 # Add this script's directory to the Python path so that the
 # sibling modules (whose names start with numbers) can be
 # imported dynamically via importlib.
-sys.path.append(os.path.dirname(__file__))
+sys.path.append(os.getcwd())
 
 # ---------------------------------------------------------
 # 2. Pipeline Configuration
@@ -24,42 +24,42 @@ PIPELINE = [
         "display_name":   "Sales by Product",
         "module_name":    "01_sales_by_product",
         "tables_created": [
-            "output/delta/gold/gold_sales_by_product"
+            "workspace.default.gold_sales_by_product"
         ]
     },
     {
         "display_name":   "Revenue by Customer",
         "module_name":    "02_revenue_by_customer",
         "tables_created": [
-            "output/delta/gold/gold_revenue_by_customer"
+            "workspace.default.gold_revenue_by_customer"
         ]
     },
     {
         "display_name":   "Daily and Weekly Trends",
         "module_name":    "03_daily_weekly_trends",
         "tables_created": [
-            "output/delta/gold/gold_daily_trends",
-            "output/delta/gold/gold_weekly_trends"
+            "workspace.default.gold_daily_trends",
+            "workspace.default.gold_weekly_trends"
         ]
     },
     {
         "display_name":   "Customer Segmentation",
         "module_name":    "04_customer_segmentation",
         "tables_created": [
-            "output/delta/gold/gold_customer_segmentation",
-            "output/delta/gold/gold_customer_segment_detail"
+            "workspace.default.gold_customer_segmentation",
+            "workspace.default.gold_customer_segment_detail"
         ]
     }
 ]
 
 # Full inventory of all Gold tables this pipeline creates
 GOLD_TABLE_INVENTORY = [
-    "output/delta/gold/gold_sales_by_product",
-    "output/delta/gold/gold_revenue_by_customer",
-    "output/delta/gold/gold_daily_trends",
-    "output/delta/gold/gold_weekly_trends",
-    "output/delta/gold/gold_customer_segmentation",
-    "output/delta/gold/gold_customer_segment_detail"
+    "workspace.default.gold_sales_by_product",
+    "workspace.default.gold_revenue_by_customer",
+    "workspace.default.gold_daily_trends",
+    "workspace.default.gold_weekly_trends",
+    "workspace.default.gold_customer_segmentation",
+    "workspace.default.gold_customer_segment_detail"
 ]
 
 

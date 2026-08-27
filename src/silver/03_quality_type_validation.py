@@ -31,7 +31,7 @@ def check_customers_types(spark, bronze_path, silver_path):
     print(f"  Source : {bronze_path}")
     print(f"  Target : {silver_path}")
 
-    df = spark.read.format("delta").load(bronze_path)
+    df = spark.table(bronze_path)
 
     # signup_date arrives as DateType from Bronze (schema-enforced).
     # A NULL here would mean the original string couldn't be parsed.
@@ -48,9 +48,9 @@ def check_customers_types(spark, bronze_path, silver_path):
         .otherwise(lit("PASS"))
     )
 
-    flagged_df.write.format("delta").mode("overwrite").save(silver_path)
+    flagged_df.write.format("delta").mode("overwrite").saveAsTable(silver_path)
 
-    result_df = spark.read.format("delta").load(silver_path)
+    result_df = spark.table(silver_path)
     print_quality_report(result_df, "Type Validation - Customers")
 
     failed = result_df.filter(col("quality_check_result") != "PASS").count()
@@ -70,7 +70,7 @@ def check_orders_types(spark, bronze_path, silver_path):
     print(f"  Source : {bronze_path}")
     print(f"  Target : {silver_path}")
 
-    df = spark.read.format("delta").load(bronze_path)
+    df = spark.table(bronze_path)
 
     # Build composite failure reason string.
     # Each check contributes a reason string or None; concat_ws drops Nones.
@@ -91,9 +91,9 @@ def check_orders_types(spark, bronze_path, silver_path):
         .otherwise(lit("PASS"))
     )
 
-    flagged_df.write.format("delta").mode("overwrite").save(silver_path)
+    flagged_df.write.format("delta").mode("overwrite").saveAsTable(silver_path)
 
-    result_df = spark.read.format("delta").load(silver_path)
+    result_df = spark.table(silver_path)
     print_quality_report(result_df, "Type Validation - Orders")
 
     failed = result_df.filter(col("quality_check_result") != "PASS").count()
@@ -113,7 +113,7 @@ def check_products_types(spark, bronze_path, silver_path):
     print(f"  Source : {bronze_path}")
     print(f"  Target : {silver_path}")
 
-    df = spark.read.format("delta").load(bronze_path)
+    df = spark.table(bronze_path)
 
     flagged_df = df.withColumn(
         "quality_check_result",
@@ -134,9 +134,9 @@ def check_products_types(spark, bronze_path, silver_path):
         .otherwise(lit("PASS"))
     )
 
-    flagged_df.write.format("delta").mode("overwrite").save(silver_path)
+    flagged_df.write.format("delta").mode("overwrite").saveAsTable(silver_path)
 
-    result_df = spark.read.format("delta").load(silver_path)
+    result_df = spark.table(silver_path)
     print_quality_report(result_df, "Type Validation - Products")
 
     failed = result_df.filter(col("quality_check_result") != "PASS").count()
@@ -147,18 +147,18 @@ def main():
     # ---------------------------------------------------------
     # 1. Initialize Spark Session
     # ---------------------------------------------------------
-    spark = SparkSession.builder.appName("Silver - Type Validation Checks").config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension").config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog").master("local[*]").getOrCreate()
+    spark = SparkSession.builder.appName("Silver - Type Validation Checks").getOrCreate()
 
     # ---------------------------------------------------------
     # 2. Define Paths
     # ---------------------------------------------------------
-    bronze_customers_path = "output/delta/bronze/bronze_customers"
-    bronze_orders_path    = "output/delta/bronze/bronze_orders"
-    bronze_products_path  = "output/delta/bronze/bronze_products"
+    bronze_customers_path = "workspace.default.bronze_customers"
+    bronze_orders_path    = "workspace.default.bronze_orders"
+    bronze_products_path  = "workspace.default.bronze_products"
 
-    silver_customers_path = "output/delta/silver/silver_customers_type_validation"
-    silver_orders_path    = "output/delta/silver/silver_orders_type_validation"
-    silver_products_path  = "output/delta/silver/silver_products_type_validation"
+    silver_customers_path = "workspace.default.silver_customers_type_validation"
+    silver_orders_path    = "workspace.default.silver_orders_type_validation"
+    silver_products_path  = "workspace.default.silver_products_type_validation"
 
     # ---------------------------------------------------------
     # 3. Run Type Validation Checks for All Three Entities
